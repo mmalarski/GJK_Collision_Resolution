@@ -1,3 +1,4 @@
+#include "Cube.h"
 #include <GL/glew.h>
 #include <GLFW/glfw3.h>
 #include <iostream>
@@ -27,13 +28,16 @@ int main(void)
         /* Problem: glewInit failed, something is seriously wrong. */
         std::cout << "GLEW not initialised! - " << err << std::endl;
     }
-    std::cout << glGetString(GL_VERSION) << std::endl;
+
+    Cube cube;
 
     /* Loop until the user closes the window */
     while (!glfwWindowShouldClose(window))
     {
         /* Render here */
         glClear(GL_COLOR_BUFFER_BIT);
+
+        cube.render();
 
         /* Swap front and back buffers */
         glfwSwapBuffers(window);
