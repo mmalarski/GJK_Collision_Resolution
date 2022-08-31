@@ -37,7 +37,9 @@ int main(void)
         /* Render here */
         glClear(GL_COLOR_BUFFER_BIT);
 
-        cube.render();
+        cube.setColor(glm::vec3(0.1f, 0.4f, 0.8f))
+            .setPosition(glm::vec3(0.5f))
+            .render();
 
         /* Swap front and back buffers */
         glfwSwapBuffers(window);
