@@ -2,6 +2,7 @@
 #include <GL/glew.h>
 #include <GLFW/glfw3.h>
 #include <iostream>
+#include "Shader.h"
 
 int main(void)
 {
@@ -30,6 +31,9 @@ int main(void)
     }
 
     Cube cube;
+    GLuint basicShader = Shader::ParseSourceAndCreateShader(
+        "res/shaders/basic.shader");
+    glUseProgram(basicShader);
 
     /* Loop until the user closes the window */
     while (!glfwWindowShouldClose(window))
