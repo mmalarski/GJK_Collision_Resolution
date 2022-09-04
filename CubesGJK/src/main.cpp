@@ -31,9 +31,12 @@ int main(void)
     }
 
     Cube cube;
-    GLuint basicShader = Shader::ParseSourceAndCreateShader(
-        "res/shaders/basic.shader");
-    glUseProgram(basicShader);
+    cube.setColor({ 0.98f, 0.72f, 0.01f, 1.0f });
+
+    Shader basicShader("res/shaders/basic.shader");
+    basicShader
+        .Use()
+        .SetUniform("u_Color", cube.getColor());
 
     /* Loop until the user closes the window */
     while (!glfwWindowShouldClose(window))

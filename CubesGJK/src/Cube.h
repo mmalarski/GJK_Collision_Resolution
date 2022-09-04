@@ -7,8 +7,10 @@ public:
 	Cube();
 	~Cube();
 	void render();
-	const GLuint getVAO();
-	const GLuint getVBO();
+	const GLuint getVAO() const;
+	const GLuint getVBO() const;
+	const glm::vec4 getColor() const;
+	Cube& setColor(const glm::vec4& color);
 
 private:
 	GLuint VBO = 0, VAO = 0, EBO = 0;
@@ -30,4 +32,5 @@ private:
 		2, 3, 7, 2, 7, 6,	  //CDH CHG
 		7, 6, 5, 7, 5, 4	  //HGF HFE
 	};
+	glm::vec4 color = glm::vec4(0.0f);
 };

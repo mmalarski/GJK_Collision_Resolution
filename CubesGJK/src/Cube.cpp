@@ -31,12 +31,23 @@ void Cube::render() {
 	glDrawElements(GL_TRIANGLES, 36, GL_UNSIGNED_INT, 0);
 }
 
-const GLuint Cube::getVAO()
+const GLuint Cube::getVAO() const
 {
 	return this->VAO;
 }
 
-const GLuint Cube::getVBO()
+const GLuint Cube::getVBO() const
 {
 	return this->VBO;
+}
+
+const glm::vec4 Cube::getColor() const
+{
+	return this->color;
+}
+
+Cube& Cube::setColor(const glm::vec4& color)
+{
+	this->color = color;
+	return *this;
 }

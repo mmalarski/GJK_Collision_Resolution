@@ -1,13 +1,12 @@
 #include "Shader.h"
 
-unsigned int Shader::LoadSourceAndCreateShader(const std::string& vertexShaderPath, const std::string& fragmentShaderPath)
+Shader::Shader(const std::string& path)
 {
-	const std::string vertexShaderSource = LoadSourceFromFile(vertexShaderPath);
-	const std::string fragmentShaderSource = LoadSourceFromFile(fragmentShaderPath);
+	this->id = ParseSourceAndCreateShader(path);
+}
 
-	unsigned int shader = CreateShader(vertexShaderSource, fragmentShaderSource);
-
-	return shader;
+Shader::~Shader()
+{
 }
 
 unsigned int Shader::ParseSourceAndCreateShader(const std::string& shaderPath)
@@ -33,28 +32,6 @@ unsigned int Shader::CreateShader(const std::string& vertexShaderSrc, const std:
 	glDeleteShader(fs);
 
 	return program;
-}
-
-const std::string Shader::LoadSourceFromFile(const std::string& path)
-{
-	std::string text;
-	std::ifstream fileStream(path, std::ios::in);
-
-	if (fileStream.is_open() == false)
-	{
-		std::cout << "Could not read file with path: \"" << path << "\"." << std::endl;
-		return "";
-	}
-
-	std::string line = "";
-	while (fileStream.eof() == false)
-	{
-		std::getline(fileStream, line);
-		text.append(line + "\n");
-	}
-
-	fileStream.close();
-	return text;
 }
 
 ShaderProgramSource Shader::ParseShader(const std::string& filepath)
@@ -91,6 +68,19 @@ ShaderProgramSource Shader::ParseShader(const std::string& filepath)
 	}
 
 	return { ss[0].str(), ss[1].str() };
+}
+
+Shader& Shader::Use()
+{
+	glUseProgram(this->id);
+	return *this;
+}
+
+Shader& Shader::SetUniform(const std::string& name, const glm::vec4& value)
+{
+	int location = glGetUniformLocation(id, name.c_str());
+	glUniform4f(location, value.x, value.y, value.z, value.w);
+	return *this;
 }
 
 unsigned int Shader::CompileShader(unsigned int type, const std::string& source)

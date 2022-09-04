@@ -5,6 +5,7 @@
 #include <sstream>
 #include <fstream>
 #include <iostream>
+#include <glm/glm.hpp>
 
 struct ShaderProgramSource
 {
@@ -15,12 +16,15 @@ struct ShaderProgramSource
 class Shader
 {
 public:
-	static unsigned int LoadSourceAndCreateShader(const std::string& vertexShaderPath, const std::string& fragmentShaderPath);
-	static unsigned int ParseSourceAndCreateShader(const std::string& shaderPath);
-	static unsigned int CreateShader(const std::string& vertexShaderSrc, const std::string& fragmentShaderSrc);
-	static const std::string LoadSourceFromFile(const std::string& path);
-	static ShaderProgramSource ParseShader(const std::string& filepath);
+	Shader(const std::string& path);
+	~Shader();
+	unsigned int ParseSourceAndCreateShader(const std::string& shaderPath);
+	unsigned int CreateShader(const std::string& vertexShaderSrc, const std::string& fragmentShaderSrc);
+	ShaderProgramSource ParseShader(const std::string& filepath);
+	Shader& Use();
+	Shader& SetUniform(const std::string& name, const glm::vec4& value);
 private:
-	static unsigned int CompileShader(unsigned int type, const std::string& source);
+	GLuint id;
+	unsigned int CompileShader(unsigned int type, const std::string& source);
 };
 
