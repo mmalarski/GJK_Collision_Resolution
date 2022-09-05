@@ -16,6 +16,10 @@ public:
 	Cube& setColor(GLfloat r, GLfloat g, GLfloat b);
 	Cube& setPosition(glm::vec3 position);
 	Cube& setPosition(GLfloat x, GLfloat y, GLfloat z);
+	const GLuint getVAO() const;
+	const GLuint getVBO() const;
+	const glm::vec4 getColor() const;
+	Cube& setColor(const glm::vec4& color);
 
 private:
 	GLuint VBO = 0, VAO = 0, EBO = 0;
@@ -41,4 +45,5 @@ private:
 	glm::vec3 position = glm::vec3(0.0f);
 
 	void applyPosition();
+	glm::vec4 color = glm::vec4(0.0f);
 };

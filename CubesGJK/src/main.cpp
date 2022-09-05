@@ -2,6 +2,7 @@
 #include <GL/glew.h>
 #include <GLFW/glfw3.h>
 #include <iostream>
+#include "Shader.h"
 
 int main(void)
 {
@@ -30,6 +31,12 @@ int main(void)
     }
 
     Cube cube;
+    cube.setColor({ 0.98f, 0.72f, 0.01f, 1.0f });
+
+    Shader basicShader("res/shaders/basic.shader");
+    basicShader
+        .Use()
+        .SetUniform("u_Color", cube.getColor());
 
     /* Loop until the user closes the window */
     while (!glfwWindowShouldClose(window))
