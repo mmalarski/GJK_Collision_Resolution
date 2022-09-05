@@ -23,6 +23,7 @@ public:
 	ShaderProgramSource ParseShader(const std::string& filepath);
 	Shader& Use();
 	Shader& SetUniform(const std::string& name, const glm::vec4& value);
+	Shader& SetUniform(const std::string& name, const glm::mat4& value);
 private:
 	GLuint id;
 	unsigned int CompileShader(unsigned int type, const std::string& source);

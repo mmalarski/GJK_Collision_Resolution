@@ -83,6 +83,13 @@ Shader& Shader::SetUniform(const std::string& name, const glm::vec4& value)
 	return *this;
 }
 
+Shader& Shader::SetUniform(const std::string& name, const glm::mat4& value)
+{
+	int location = glGetUniformLocation(id, name.c_str());
+	glUniformMatrix4fv(location, 1, GL_FALSE, &value[0][0]);
+	return *this;
+}
+
 unsigned int Shader::CompileShader(unsigned int type, const std::string& source)
 {
 	unsigned int id = glCreateShader(type);

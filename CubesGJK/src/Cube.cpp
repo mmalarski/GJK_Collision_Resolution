@@ -34,38 +34,44 @@ void Cube::render() {
 	glDrawElements(GL_TRIANGLES, 36, GL_UNSIGNED_INT, 0);
 }
 
- GLuint Cube::getVAO() const
+ const GLuint Cube::getVAO() const
 {
 	return this->VAO;
 }
 
- GLuint Cube::getVBO() const
+ const GLuint Cube::getVBO() const
 {
 	return this->VBO;
 }
 
- Cube& Cube::setColor(glm::vec3 color)
+ const glm::vec4 Cube::getColor() const
+ {
+	 return this->color;
+ }
+
+ Cube& Cube::setColor(const glm::vec4& color)
  {
 	 this->color = color;
 	 return *this;
  }
 
- Cube& Cube::setColor(GLfloat r, GLfloat g, GLfloat b)
+ Cube& Cube::setColor(const GLfloat& r, const GLfloat& g, const GLfloat& b, const GLfloat& a)
  {
 	 this->color.x = r;
 	 this->color.y = g;
 	 this->color.z = b;
+	 this->color.w = a;
 	 return *this;
  }
 
- Cube& Cube::setPosition(glm::vec3 position)
+ Cube& Cube::setPosition(const glm::vec3& position)
  {
 	 this->position = position;
 	 applyPosition();
 	 return *this;
  }
 
- Cube& Cube::setPosition(GLfloat x, GLfloat y, GLfloat z)
+ Cube& Cube::setPosition(const GLfloat& x, const GLfloat& y, const GLfloat& z)
  {
 	 this->position.x = x;
 	 this->position.y = y;
