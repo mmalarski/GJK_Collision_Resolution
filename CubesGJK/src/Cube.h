@@ -1,4 +1,5 @@
 #include <glm/glm.hpp>
+#include <glm/gtc/matrix_transform.hpp>
 #include <GL/glew.h>
 #include <GLFW/glfw3.h>
 
@@ -13,10 +14,13 @@ public:
 	const GLuint getVAO() const;
 	const GLuint getVBO() const;
 	const glm::vec4 getColor() const;
+	const glm::mat4 getModelMatrix() const;
 	Cube& setColor(const glm::vec4& color);
 	Cube& setColor(const GLfloat& r, const GLfloat& g, const GLfloat& b, const GLfloat& a);
 	Cube& setPosition(const glm::vec3& position);
 	Cube& setPosition(const GLfloat& x, const GLfloat& y, const GLfloat& z);
+	Cube& moveWithVector(const glm::vec3& vector);
+	Cube& moveWithVector(const GLfloat& x, const GLfloat& y, const GLfloat& z);
 
 private:
 	GLuint VBO = 0, VAO = 0, EBO = 0;
@@ -38,8 +42,6 @@ private:
 		2, 3, 7, 2, 7, 6,	  //CDH CHG
 		7, 6, 5, 7, 5, 4	  //HGF HFE
 	};
-	glm::vec4 color = glm::vec4(0.2f);
-	glm::vec3 position = glm::vec3(0.0f);
-
-	void applyPosition();
+	glm::vec4 color;
+	glm::mat4 position;
 };

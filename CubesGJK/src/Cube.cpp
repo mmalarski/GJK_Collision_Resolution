@@ -1,6 +1,6 @@
 #include "Cube.h"
 
-Cube::Cube() {
+Cube::Cube() : color(glm::vec4(0.2f)), position(glm::mat4(1.0f)) {
 	glGenBuffers(1, &this->VBO);
 	glBindBuffer(GL_ARRAY_BUFFER, this->VBO);
 	glBufferData(GL_ARRAY_BUFFER, sizeof(this->vertices), this->vertices, GL_STATIC_DRAW);
@@ -49,6 +49,11 @@ void Cube::render() {
 	 return this->color;
  }
 
+ const glm::mat4 Cube::getModelMatrix() const
+ {
+	 return this->position;
+ }
+
  Cube& Cube::setColor(const glm::vec4& color)
  {
 	 this->color = color;
@@ -66,28 +71,28 @@ void Cube::render() {
 
  Cube& Cube::setPosition(const glm::vec3& position)
  {
-	 this->position = position;
-	 applyPosition();
+	 this->position[0][0] = position.x;
+	 this->position[1][1] = position.y;
+	 this->position[2][2] = position.z;
 	 return *this;
  }
 
  Cube& Cube::setPosition(const GLfloat& x, const GLfloat& y, const GLfloat& z)
  {
-	 this->position.x = x;
-	 this->position.y = y;
-	 this->position.z = z;
-	 applyPosition();
+	 this->position[0][0] = x;
+	 this->position[1][1] = y;
+	 this->position[2][2] = z;
 	 return *this;
  }
 
- void Cube::applyPosition()
+ Cube& Cube::moveWithVector(const glm::vec3& vector) 
  {
-	 glBindBuffer(GL_ARRAY_BUFFER, this->VBO);
-	 glm::vec3 translatedVertices[CUBE_VERTICES] = { glm::vec3(0.0f) };
-	 for (int i = 0; i < CUBE_VERTICES; i++)
-	 {
-		 translatedVertices[i] = this->vertices[i] + position;
-	 }
-	 glBufferSubData(GL_ARRAY_BUFFER, 0, sizeof(translatedVertices), translatedVertices);
-	 glBindBuffer(GL_ARRAY_BUFFER, 0);
+	 glm::translate(this->position, vector);
+	 return *this;
+ }
+
+ Cube& Cube::moveWithVector(const GLfloat& x, const GLfloat& y, const GLfloat& z)
+ {
+	 glm::translate(this->position, {x, y, z});
+	 return *this;
  }

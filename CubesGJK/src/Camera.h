@@ -17,9 +17,10 @@ class Camera
 {
 public:
 	Camera();
+	const glm::vec3 getPosition() const;
 	const glm::mat4 getViewMatrix() const;
 	const GLfloat getZoom() const;
-	void processKeyboard(const CameraMovementDirection& direction, const GLfloat& deltaTime);
+	void processKeyboard(const CameraMovementDirection& direction);
 
 private:
 	glm::vec3 position;

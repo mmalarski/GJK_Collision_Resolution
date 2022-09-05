@@ -18,14 +18,14 @@ class Shader
 public:
 	Shader(const std::string& path);
 	~Shader();
-	unsigned int ParseSourceAndCreateShader(const std::string& shaderPath);
-	unsigned int CreateShader(const std::string& vertexShaderSrc, const std::string& fragmentShaderSrc);
+	GLuint parseSourceAndCreateShader(const std::string& shaderPath);
+	GLuint createShader(const std::string& vertexShaderSrc, const std::string& fragmentShaderSrc);
 	ShaderProgramSource ParseShader(const std::string& filepath);
-	Shader& Use();
-	Shader& SetUniform(const std::string& name, const glm::vec4& value);
-	Shader& SetUniform(const std::string& name, const glm::mat4& value);
+	Shader& use();
+	Shader& setUniform(const std::string& name, const glm::vec4& value);
+	Shader& setUniform(const std::string& name, const glm::mat4& value);
 private:
 	GLuint id;
-	unsigned int CompileShader(unsigned int type, const std::string& source);
+	GLuint compileShader(unsigned int type, const std::string& source);
 };
 

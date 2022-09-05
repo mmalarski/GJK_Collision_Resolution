@@ -1,12 +1,22 @@
 #include "Camera.h"
 
-Camera::Camera()
+Camera::Camera():
+	position(glm::vec3(0.0f)),
+	front(glm::vec3(0.0f, 0.0f, -1.0f)),
+	up(glm::vec3(0.0f, 1.0f, 0.0f)),
+	right(glm::vec3(1.0f, 0.0f, 0.0f)),
+	worldUp(this->up),
+	yaw(0.0f),
+	pitch(0.0f),
+	movementSpeed(0.01f),
+	zoom(45.0f)
 {
-	this->position = glm::vec3(0.0f);
-	this->front = glm::vec3(0.0f, 0.0f, -1.0f);
-	this->up = glm::vec3(0.0f, 1.0f, 0.0f);
-	this->worldUp = this->up;
 	updateCameraVectors();
+}
+
+const glm::vec3 Camera::getPosition() const
+{
+	return this->position;
 }
 
 const glm::mat4 Camera::getViewMatrix() const
@@ -19,23 +29,29 @@ const GLfloat Camera::getZoom() const
 	return this->zoom;
 }
 
-void Camera::processKeyboard(const CameraMovementDirection& direction, const GLfloat& deltaTime)
+void Camera::processKeyboard(const CameraMovementDirection& direction)
 {
-	GLfloat velocity = this->movementSpeed * deltaTime;
 	switch (direction) {
-	case CameraMovementDirection::FORWARD:
-		this->position += this->front * velocity;
-	case CameraMovementDirection::BACKWARD:
-		this->position -= this->front * velocity;
-	case CameraMovementDirection::LEFT:
-		this->position -= this->right * velocity;
-	case CameraMovementDirection::RIGHT:
-		this->position += this->right * velocity;
-	case CameraMovementDirection::UP:
-		this->position += this->up * velocity;
-	case CameraMovementDirection::DOWN:
-		this->position -= this->up * velocity;
+	case FORWARD:
+		this->position += this->front * this->movementSpeed;
+		break;
+	case BACKWARD:
+		this->position -= this->front * this->movementSpeed;
+		break;
+	case LEFT:
+		this->position -= this->right * this->movementSpeed;
+		break;
+	case RIGHT:
+		this->position += this->right * this->movementSpeed;
+		break;
+	case UP:
+		this->position += this->up * this->movementSpeed;
+		break;
+	case DOWN:
+		this->position -= this->up * this->movementSpeed;
+		break;
 	}
+	printf("Cameras position: %f, %f, %f\n", this->position.x, this->position.y, this->position.z);
 }
 
 void Camera::updateCameraVectors()
