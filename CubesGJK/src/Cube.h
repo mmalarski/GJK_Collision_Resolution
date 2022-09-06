@@ -5,6 +5,9 @@
 
 #define CUBE_VERTICES	8
 #define CUBE_INDICES	36
+#define VERTEX_COMPONENTS 3
+#define VERTICES_AND_NORMALS 2
+#define NORMALS_PER_VERTEX 3
 
 class Cube {
 public:
@@ -24,23 +27,45 @@ public:
 
 private:
 	GLuint VBO = 0, VAO = 0, EBO = 0;
-	glm::vec3 vertices[CUBE_VERTICES] = {
-		 { 0.5f,  0.5f, 0.0f},	//A 0
-		 {-0.5f,  0.5f, 0.0f},	//B 1
-		 {-0.5f, -0.5f, 0.0f},	//C 2
-		 { 0.5f, -0.5f, 0.0f},	//D 3
-		 { 0.5f,  0.5f, 1.0f},	//E 4
-		 {-0.5f,  0.5f, 1.0f},	//F 5
-		 {-0.5f, -0.5f, 1.0f},	//G 6
-		 { 0.5f, -0.5f, 1.0f}	//H 7
+	//TODO: check if the vertices are correct
+	GLfloat vertices[CUBE_VERTICES * VERTEX_COMPONENTS * VERTICES_AND_NORMALS * NORMALS_PER_VERTEX] = {
+		  0.5f,  0.5f, -0.5f,  0.0f, 0.0f, -1.0f,	//A 0
+		  0.5f, -0.5f, -0.5f,  0.0f, 0.0f, -1.0f,	//D 1
+		 -0.5f, -0.5f, -0.5f,  0.0f, 0.0f, -1.0f,	//C 2
+		 -0.5f,  0.5f, -0.5f,  0.0f, 0.0f, -1.0f,	//B 3
+							   
+		  0.5f,  0.5f, -0.5f,  0.0f, 1.0f, 0.0f,	//A 4
+		 -0.5f,  0.5f, -0.5f,  0.0f, 1.0f, 0.0f,	//B 5
+		 -0.5f,  0.5f,  0.5f,  0.0f, 1.0f, 0.0f,	//F 6
+		  0.5f,  0.5f,  0.5f,  0.0f, 1.0f, 0.0f,	//E 7
+							   
+		  0.5f,  0.5f, -0.5f,  1.0f, 0.0f, 0.0f,	//A 8
+		  0.5f,  0.5f,  0.5f,  1.0f, 0.0f, 0.0f,	//E 9
+		  0.5f, -0.5f,  0.5f,  1.0f, 0.0f, 0.0f,	//H 10
+		  0.5f, -0.5f, -0.5f,  1.0f, 0.0f, 0.0f,	//D 11
+
+		 -0.5f,  0.5f, -0.5f, -1.0f, 0.0f, 0.0f,	//B 12
+		 -0.5f, -0.5f, -0.5f, -1.0f, 0.0f, 0.0f,	//C 13
+		 -0.5f, -0.5f,  0.5f, -1.0f, 0.0f, 0.0f,	//G 14
+		 -0.5f,  0.5f,  0.5f, -1.0f, 0.0f, 0.0f,	//F 15
+													
+		 -0.5f, -0.5f, -0.5f, 0.0f, -1.0f, 0.0f,	//C 16
+		 -0.5f, -0.5f,  0.5f, 0.0f, -1.0f, 0.0f,	//G 17
+		  0.5f, -0.5f,  0.5f, 0.0f, -1.0f, 0.0f,	//H 18
+		  0.5f, -0.5f, -0.5f, 0.0f, -1.0f, 0.0f,	//D 19
+							   
+		  0.5f, -0.5f,  0.5f,  0.0f, 0.0f, 1.0f,	//H 20
+		  0.5f,  0.5f,  0.5f,  0.0f, 0.0f, 1.0f 	//E 21
+		 -0.5f,  0.5f,  0.5f,  0.0f, 0.0f, 1.0f,	//F 22
+		 -0.5f, -0.5f,  0.5f,  0.0f, 0.0f, 1.0f,	//G 23
 	};
 	GLuint indices[CUBE_INDICES] = {
-		0, 1, 2, 0, 2, 3,	  //ABC ACD
-		0, 1, 5, 0, 5, 4,	  //ABF AFE
-		0, 3, 7, 0, 7, 4,	  //ADH AHE
-		1, 2, 6, 1, 6, 5,	  //BCG BGF
-		2, 3, 7, 2, 7, 6,	  //CDH CHG
-		7, 6, 5, 7, 5, 4	  //HGF HFE
+		0,   1,  2,  0,  2,  3,	  //ADC ACB
+		4,   5,  6,  4,  6,  7,	  //ABF AFE
+		8,   9, 10,  8, 10, 11,	  //AEH AHD
+		12, 13, 14, 12, 14, 15,	  //BCG BGF
+		16, 17, 18, 16, 18, 19,	  //CGH CHD
+		20, 21, 22, 20, 22, 23	  //HEF HFG
 	};
 	glm::vec4 color;
 	glm::mat4 position;

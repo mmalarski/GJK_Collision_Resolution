@@ -51,7 +51,6 @@ void Camera::processKeyboard(const CameraMovementDirection& direction)
 		this->position -= this->up * this->movementSpeed;
 		break;
 	}
-	printf("Cameras position: %f, %f, %f\n", this->position.x, this->position.y, this->position.z);
 }
 
 void Camera::updateCameraVectors()

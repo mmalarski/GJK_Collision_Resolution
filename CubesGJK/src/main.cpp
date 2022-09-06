@@ -5,8 +5,8 @@
 #include <iostream>
 #include "Shader.h"
 
-const int WINDOW_WIDTH = 640;
-const int WINDOW_HEIGHT = 480;
+#define WINDOW_WIDTH    640
+#define WINDOW_HEIGHT   480
 
 void processInput(GLFWwindow* window, Camera& camera);
 
@@ -36,7 +36,12 @@ int main(void)
         std::cout << "GLEW not initialised! - " << err << std::endl;
     }
 
+    glEnable(GL_CULL_FACE);
+    glEnable(GL_DEPTH_TEST);
+
     Camera camera;
+
+    glm::vec3 directionalLight = glm::vec3(2.0f, 2.0f, 0.0f);
 
     Cube cube;
     cube.setColor({ 0.98f, 0.72f, 0.01f, 1.0f });
@@ -49,14 +54,15 @@ int main(void)
         processInput(window, camera);
 
         /* Render here */
-        glClear(GL_COLOR_BUFFER_BIT);
+        glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
         basicShader
             .use()
-            .setUniform("u_Color", cube.getColor())
             .setUniform("model", cube.getModelMatrix())
             .setUniform("view", camera.getViewMatrix())
-            .setUniform("projection", glm::perspective(glm::radians(camera.getZoom()), (GLfloat)WINDOW_WIDTH / (GLfloat)WINDOW_HEIGHT, 0.01f, 100.0f));
+            .setUniform("projection", glm::perspective(glm::radians(camera.getZoom()), (GLfloat)WINDOW_WIDTH / (GLfloat)WINDOW_HEIGHT, 0.01f, 100.0f))
+            .setUniform("u_Color", cube.getColor())
+            .setUniform("directionalLight", directionalLight);
 
         cube.render();
 

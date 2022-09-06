@@ -76,6 +76,13 @@ Shader& Shader::use()
 	return *this;
 }
 
+Shader& Shader::setUniform(const std::string& name, const glm::vec3& value)
+{
+	int location = glGetUniformLocation(id, name.c_str());
+	glUniform3f(location, value.x, value.y, value.z);
+	return *this;
+}
+
 Shader& Shader::setUniform(const std::string& name, const glm::vec4& value)
 {
 	int location = glGetUniformLocation(id, name.c_str());

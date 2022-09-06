@@ -22,6 +22,7 @@ public:
 	GLuint createShader(const std::string& vertexShaderSrc, const std::string& fragmentShaderSrc);
 	ShaderProgramSource ParseShader(const std::string& filepath);
 	Shader& use();
+	Shader& setUniform(const std::string& name, const glm::vec3& value);
 	Shader& setUniform(const std::string& name, const glm::vec4& value);
 	Shader& setUniform(const std::string& name, const glm::mat4& value);
 private:
