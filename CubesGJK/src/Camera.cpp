@@ -36,6 +36,7 @@ Camera& Camera::setMousePosition(const GLdouble& mousePositionX, const GLdouble&
 	GLdouble mouseOffsetX = mousePositionX - this->mousePositionX;
 	GLdouble mouseOffsetY = this->mousePositionY - mousePositionY;
 
+	//TODO: get rid of the gimball lock
 	this->yaw += mouseOffsetX;
 	this->pitch += mouseOffsetY;
 	this->updateCameraVectors();
@@ -47,12 +48,15 @@ Camera& Camera::setMousePosition(const GLdouble& mousePositionX, const GLdouble&
 
 void Camera::processKeyboard(const CameraMovementDirection& direction)
 {
+	glm::vec3 flattenedFront = glm::vec3(0.0f);
 	switch (direction) {
 	case FORWARD:
-		this->position += this->front * this->movementSpeed;
+		flattenedFront = glm::vec3(this->front.x, 0.0f, this->front.z);
+		this->position += glm::normalize(flattenedFront) * this->movementSpeed;
 		break;
 	case BACKWARD:
-		this->position -= this->front * this->movementSpeed;
+		flattenedFront = glm::vec3(this->front.x, 0.0f, this->front.z);
+		this->position -= glm::normalize(flattenedFront) * this->movementSpeed;
 		break;
 	case LEFT:
 		this->position -= this->right * this->movementSpeed;
@@ -61,10 +65,10 @@ void Camera::processKeyboard(const CameraMovementDirection& direction)
 		this->position += this->right * this->movementSpeed;
 		break;
 	case UP:
-		this->position += this->up * this->movementSpeed;
+		this->position += this->worldUp * this->movementSpeed;
 		break;
 	case DOWN:
-		this->position -= this->up * this->movementSpeed;
+		this->position -= this->worldUp * this->movementSpeed;
 		break;
 	}
 }
@@ -75,6 +79,7 @@ void Camera::updateCameraVectors()
 	updatedFront.x = glm::cos(glm::radians(this->yaw) * glm::cos(glm::radians(this->pitch)));
 	updatedFront.y = glm::sin(glm::radians(this->pitch));
 	updatedFront.z = glm::sin(glm::radians(this->yaw) * glm::cos(glm::radians(this->pitch)));
+	
 	this->front = glm::normalize(updatedFront);
 	this->right = glm::normalize(glm::cross(this->front, this->worldUp));
 	this->up = glm::normalize(glm::cross(this->right, this->front));
