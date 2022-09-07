@@ -1,6 +1,6 @@
 #include "Camera.h"
 
-Camera::Camera():
+Camera::Camera(const GLdouble& initialMousePositionX, const GLdouble& initialMousePositionY) :
 	position(glm::vec3(0.0f)),
 	front(glm::vec3(0.0f, 0.0f, -1.0f)),
 	up(glm::vec3(0.0f, 1.0f, 0.0f)),
@@ -9,7 +9,9 @@ Camera::Camera():
 	yaw(0.0f),
 	pitch(0.0f),
 	movementSpeed(0.01f),
-	zoom(45.0f)
+	zoom(45.0f),
+	mousePositionX(initialMousePositionX),
+	mousePositionY(initialMousePositionY)
 {
 	updateCameraVectors();
 }
@@ -27,6 +29,20 @@ const glm::mat4 Camera::getViewMatrix() const
 const GLfloat Camera::getZoom() const
 {
 	return this->zoom;
+}
+
+Camera& Camera::setMousePosition(const GLdouble& mousePositionX, const GLdouble& mousePositionY)
+{
+	GLdouble mouseOffsetX = mousePositionX - this->mousePositionX;
+	GLdouble mouseOffsetY = this->mousePositionY - mousePositionY;
+
+	this->yaw += mouseOffsetX;
+	this->pitch += mouseOffsetY;
+	this->updateCameraVectors();
+
+	this->mousePositionX = mousePositionX;
+	this->mousePositionY = mousePositionY;
+	return *this;
 }
 
 void Camera::processKeyboard(const CameraMovementDirection& direction)

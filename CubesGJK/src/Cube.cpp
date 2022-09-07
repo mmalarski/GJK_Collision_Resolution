@@ -1,6 +1,6 @@
 #include "Cube.h"
 
-Cube::Cube() : color(glm::vec4(0.2f)), position(glm::mat4(1.0f)) {
+Cube::Cube() : color(glm::vec4(0.4f)), position(glm::mat4(1.0f)) {
 	glGenBuffers(1, &this->VBO);
 	glBindBuffer(GL_ARRAY_BUFFER, this->VBO);
 	glBufferData(GL_ARRAY_BUFFER, sizeof(this->vertices), this->vertices, GL_STATIC_DRAW);

@@ -16,10 +16,11 @@ enum CameraMovementDirection {
 class Camera
 {
 public:
-	Camera();
+	Camera(const GLdouble& initialMousePositionX, const GLdouble& initialMousePositionY);
 	const glm::vec3 getPosition() const;
 	const glm::mat4 getViewMatrix() const;
 	const GLfloat getZoom() const;
+	Camera& setMousePosition(const GLdouble& mousePositionX, const GLdouble& mousePositionY);
 	void processKeyboard(const CameraMovementDirection& direction);
 
 private:
@@ -32,6 +33,9 @@ private:
 	GLfloat pitch;
 	GLfloat movementSpeed;
 	GLfloat zoom;
+
+	GLdouble mousePositionX;
+	GLdouble mousePositionY;
 
 	void updateCameraVectors();
 };

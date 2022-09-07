@@ -5,8 +5,8 @@
 #include <iostream>
 #include "Shader.h"
 
-#define WINDOW_WIDTH    640
-#define WINDOW_HEIGHT   480
+#define WINDOW_WIDTH    1020
+#define WINDOW_HEIGHT   860
 
 void processInput(GLFWwindow* window, Camera& camera);
 
@@ -39,13 +39,10 @@ int main(void)
     glEnable(GL_CULL_FACE);
     glEnable(GL_DEPTH_TEST);
 
-    Camera camera;
-
+    glfwSetCursorPos(window, WINDOW_WIDTH * 0.5, WINDOW_HEIGHT * 0.5);
+    Camera camera(WINDOW_WIDTH * 0.5, WINDOW_HEIGHT * 0.5);
     glm::vec3 directionalLight = glm::vec3(2.0f, 2.0f, 0.0f);
-
     Cube cube;
-    cube.setColor({ 0.98f, 0.72f, 0.01f, 1.0f });
-
     Shader basicShader("res/shaders/basic.shader");
 
     /* Loop until the user closes the window */
@@ -94,4 +91,8 @@ void processInput(GLFWwindow* window, Camera& camera)
         camera.processKeyboard(UP);
     if (glfwGetKey(window, GLFW_KEY_LEFT_SHIFT) == GLFW_PRESS)
         camera.processKeyboard(DOWN);
+
+    GLdouble mousePositionX, mousePositionY;
+    glfwGetCursorPos(window, &mousePositionX, &mousePositionY);
+    camera.setMousePosition(mousePositionX, mousePositionY);
 }
