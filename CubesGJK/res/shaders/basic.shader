@@ -33,6 +33,6 @@ void main()
 {
 	vec3 norm = normalize(normal_);
 	vec3 lightDirection = normalize(directionalLight - fragmentPosition);
-	float diffuse = max(dot(norm, lightDirection), 0.1);
+	float diffuse = max(dot(norm, lightDirection), 0.2);
 	color = u_Color * diffuse;
 }
