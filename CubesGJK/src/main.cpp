@@ -3,12 +3,13 @@
 #include <GL/glew.h>
 #include <GLFW/glfw3.h>
 #include <iostream>
+#include "Light.h"
 #include "Shader.h"
 
 #define WINDOW_WIDTH    1020
 #define WINDOW_HEIGHT   860
 
-void processInput(GLFWwindow* window, Camera& camera, glm::vec3& directionalLight);
+void processInput(GLFWwindow* window, Camera& camera, Light& directionalLight);
 
 int main(void)
 {
@@ -42,7 +43,7 @@ int main(void)
 
     glfwSetCursorPos(window, WINDOW_WIDTH * 0.5, WINDOW_HEIGHT * 0.5);
     Camera camera(WINDOW_WIDTH * 0.5, WINDOW_HEIGHT * 0.5);
-    glm::vec3 directionalLightPosition = glm::vec3(2.0f, 0.0f, 2.0f);
+    Light directionalLightPosition({ 2.0f, 0.0f, 2.0f });
     Cube cube({ 0.0f, 3.0f, 0.0f });
     CubeManager cubeManager(10, 3.0f, 2.0f, 1.0f);
     Shader basicShader("res/shaders/basic.shader");
@@ -61,11 +62,13 @@ int main(void)
             .setUniform("view", camera.getViewMatrix())
             .setUniform("projection", glm::perspective(glm::radians(camera.getZoom()), (GLfloat)WINDOW_WIDTH / (GLfloat)WINDOW_HEIGHT, 0.01f, 100.0f))
             .setUniform("u_Color", cube.getColor())
-            .setUniform("directionalLight", directionalLightPosition);
-
+            .setUniform("directionalLight", directionalLightPosition.getPosition());
+        
         cube.render();
 
         cubeManager.render(basicShader);
+
+        directionalLightPosition.render(basicShader);
 
         /* Swap front and back buffers */
         glfwSwapBuffers(window);
@@ -78,7 +81,7 @@ int main(void)
     return 0;
 }
 
-void processInput(GLFWwindow* window, Camera& camera, glm::vec3& directionalLight)
+void processInput(GLFWwindow* window, Camera& camera, Light& directionalLight)
 {
     if (glfwGetKey(window, GLFW_KEY_ESCAPE) == GLFW_PRESS)
         glfwSetWindowShouldClose(window, true);
@@ -97,17 +100,17 @@ void processInput(GLFWwindow* window, Camera& camera, glm::vec3& directionalLigh
         camera.processKeyboard(DOWN);
 
     if (glfwGetKey(window, GLFW_KEY_T) == GLFW_PRESS)
-        directionalLight.z -= 0.01f;
+        directionalLight.move({ 0.0f, 0.0f, -0.01f });
     if (glfwGetKey(window, GLFW_KEY_G) == GLFW_PRESS)
-        directionalLight.z += 0.01f;
+        directionalLight.move({ 0.0f, 0.0f, 0.01f });
     if (glfwGetKey(window, GLFW_KEY_F) == GLFW_PRESS)
-        directionalLight.x -= 0.01f;
+        directionalLight.move({ -0.01f, 0.0f, 0.0f });
     if (glfwGetKey(window, GLFW_KEY_H) == GLFW_PRESS)
-        directionalLight.x += 0.01f;
+        directionalLight.move({ 0.01f, 0.0f, 0.0f });
     if (glfwGetKey(window, GLFW_KEY_Y) == GLFW_PRESS)
-        directionalLight.y += 0.01f;
+        directionalLight.move({ 0.0f, 0.01f, 0.0f });
     if (glfwGetKey(window, GLFW_KEY_R) == GLFW_PRESS)
-        directionalLight.y -= 0.01f;
+        directionalLight.move({ 0.0f, -0.01f, 0.0f });
 
     GLdouble mousePositionX, mousePositionY;
     glfwGetCursorPos(window, &mousePositionX, &mousePositionY);

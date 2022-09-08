@@ -1,3 +1,5 @@
+#pragma once
+
 #include <glm/glm.hpp>
 #include <glm/gtc/matrix_transform.hpp>
 #include <GL/glew.h>
@@ -26,6 +28,7 @@ public:
 	Cube& setColor(const GLfloat& r, const GLfloat& g, const GLfloat& b, const GLfloat& a);
 	Cube& setPosition(const glm::vec3& position);
 	Cube& setPosition(const GLfloat& x, const GLfloat& y, const GLfloat& z);
+	Cube& setScale(const GLfloat& scale);
 	Cube& moveWithVector(const glm::vec3& vector);
 	Cube& moveWithVector(const GLfloat& x, const GLfloat& y, const GLfloat& z);
 

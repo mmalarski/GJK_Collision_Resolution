@@ -88,6 +88,14 @@ void Cube::render() const {
 	 return *this;
  }
 
+ Cube& Cube::setScale(const GLfloat& scale)
+ {
+	 this->modelMatrix[0][0] = scale;
+	 this->modelMatrix[1][1] = scale;
+	 this->modelMatrix[2][2] = scale;
+	 return *this;
+ }
+
  Cube& Cube::moveWithVector(const glm::vec3& vector) 
  {
 	 this->modelMatrix = glm::translate(this->modelMatrix, vector);
