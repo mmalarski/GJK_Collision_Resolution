@@ -15,7 +15,7 @@ CubeManager::CubeManager(const GLuint& cubeNumber, const GLfloat& rangeOnXAxis, 
 		X = uniform_distX(engine);
 		Z = uniform_distZ(engine);
 		Cube* cube = new Cube({ X, height, Z });
-		cube->setColor({ 1.0f, 1.0f, 0.0f });
+		cube->setColor({ 0.98f, 0.72f, 0.01f });
 		this->addCube(cube);
 	}
 }

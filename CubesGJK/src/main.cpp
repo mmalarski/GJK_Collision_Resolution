@@ -43,8 +43,8 @@ int main(void)
     glfwSetCursorPos(window, WINDOW_WIDTH * 0.5, WINDOW_HEIGHT * 0.5);
     Camera camera(WINDOW_WIDTH * 0.5, WINDOW_HEIGHT * 0.5);
     glm::vec3 directionalLightPosition = glm::vec3(2.0f, 0.0f, 2.0f);
-    Cube cube({ 0.0f, 1.0f, 0.0f });
-    CubeManager cubeManager(50, 3.0f, 2.0f, 1.0f);
+    Cube cube({ 0.0f, 3.0f, 0.0f });
+    CubeManager cubeManager(10, 3.0f, 2.0f, 1.0f);
     Shader basicShader("res/shaders/basic.shader");
 
     /* Loop until the user closes the window */
