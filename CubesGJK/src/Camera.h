@@ -36,6 +36,7 @@ private:
 
 	GLdouble mousePositionX;
 	GLdouble mousePositionY;
+	GLfloat mouseSensitivity;
 
 	void updateCameraVectors();
 };

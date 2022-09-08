@@ -1,28 +1,28 @@
 #include "Cube.h"
 
-Cube::Cube() : color(glm::vec4(0.4f)), position(glm::mat4(1.0f)) {
-	glGenBuffers(1, &this->VBO);
-	glBindBuffer(GL_ARRAY_BUFFER, this->VBO);
-	glBufferData(GL_ARRAY_BUFFER, sizeof(this->vertices), this->vertices, GL_STATIC_DRAW);
+Cube::Cube() : 
+	color(glm::vec4(0.4f)), 
+	modelMatrix(glm::mat4(1.0f))
+{
+	initializeBuffers();
+}
 
-	glGenBuffers(1, &this->EBO);
-	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, this->EBO);
-	glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(this->indices), this->indices, GL_STATIC_DRAW);
-
-	glGenVertexArrays(1, &this->VAO);
-	glBindVertexArray(this->VAO);
-	glBindBuffer(GL_ARRAY_BUFFER, this->VBO);
-	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(float), (void*)0);
-	glEnableVertexAttribArray(0);
+Cube::Cube(const glm::vec3& position) : 
+	color(glm::vec4(0.4f)),
+	modelMatrix(glm::mat4(1.0f))
+{
+	initializeBuffers();
+	this->setPosition(position);
 }
 
 Cube::~Cube() {
 	glDeleteVertexArrays(1, &this->VAO);
 	glDeleteBuffers(1, &this->VBO);
 	glDeleteBuffers(1, &this->EBO);
+	Print("destructor");
 }
 
-void Cube::render() {
+void Cube::render() const {
 	glBindBuffer(GL_ARRAY_BUFFER, this->VBO);
 	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, this->EBO);
 	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 6 * sizeof(float), (void*)0);
@@ -49,12 +49,17 @@ void Cube::render() {
 
  const glm::mat4 Cube::getModelMatrix() const
  {
-	 return this->position;
+	 return this->modelMatrix;
  }
 
- Cube& Cube::setColor(const glm::vec4& color)
+ const glm::vec3 Cube::getPosition() const
  {
-	 this->color = color;
+	 return glm::vec3(this->modelMatrix[3][0], this->modelMatrix[3][1], this->modelMatrix[3][2]);
+ }
+
+ Cube& Cube::setColor(const glm::vec3& color)
+ {
+	 this->color = glm::vec4(color.x, color.y, color.z, 1.0f);
 	 return *this;
  }
 
@@ -69,28 +74,43 @@ void Cube::render() {
 
  Cube& Cube::setPosition(const glm::vec3& position)
  {
-	 this->position[0][0] = position.x;
-	 this->position[1][1] = position.y;
-	 this->position[2][2] = position.z;
+	 this->modelMatrix[3][0] = position.x;
+	 this->modelMatrix[3][1] = position.y;
+	 this->modelMatrix[3][2] = position.z;
 	 return *this;
  }
 
  Cube& Cube::setPosition(const GLfloat& x, const GLfloat& y, const GLfloat& z)
  {
-	 this->position[0][0] = x;
-	 this->position[1][1] = y;
-	 this->position[2][2] = z;
+	 this->modelMatrix[3][0] = x;
+	 this->modelMatrix[3][1] = y;
+	 this->modelMatrix[3][2] = z;
 	 return *this;
  }
 
  Cube& Cube::moveWithVector(const glm::vec3& vector) 
  {
-	 glm::translate(this->position, vector);
+	 this->modelMatrix = glm::translate(this->modelMatrix, vector);
 	 return *this;
  }
 
  Cube& Cube::moveWithVector(const GLfloat& x, const GLfloat& y, const GLfloat& z)
  {
-	 glm::translate(this->position, {x, y, z});
+	 glm::translate(this->modelMatrix, {x, y, z});
 	 return *this;
+ }
+
+ void Cube::initializeBuffers()
+ {
+	 glGenBuffers(1, &this->VBO);
+	 glBindBuffer(GL_ARRAY_BUFFER, this->VBO);
+	 glBufferData(GL_ARRAY_BUFFER, sizeof(this->vertices), this->vertices, GL_STATIC_DRAW);
+
+	 glGenBuffers(1, &this->EBO);
+	 glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, this->EBO);
+	 glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(this->indices), this->indices, GL_STATIC_DRAW);
+
+	 glGenVertexArrays(1, &this->VAO);
+	 glBindVertexArray(this->VAO);
+	 glBindBuffer(GL_ARRAY_BUFFER, this->VBO);
  }

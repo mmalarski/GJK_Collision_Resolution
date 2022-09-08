@@ -2,6 +2,8 @@
 #include <glm/gtc/matrix_transform.hpp>
 #include <GL/glew.h>
 #include <GLFW/glfw3.h>
+#include "macros.h"
+#include <iostream>
 
 #define CUBE_VERTICES	8
 #define CUBE_INDICES	36
@@ -12,13 +14,15 @@
 class Cube {
 public:
 	Cube();
+	Cube(const glm::vec3& position);
 	~Cube();
-	void render();
+	void render() const;
 	const GLuint getVAO() const;
 	const GLuint getVBO() const;
 	const glm::vec4 getColor() const;
 	const glm::mat4 getModelMatrix() const;
-	Cube& setColor(const glm::vec4& color);
+	const glm::vec3 getPosition() const;
+	Cube& setColor(const glm::vec3& color);
 	Cube& setColor(const GLfloat& r, const GLfloat& g, const GLfloat& b, const GLfloat& a);
 	Cube& setPosition(const glm::vec3& position);
 	Cube& setPosition(const GLfloat& x, const GLfloat& y, const GLfloat& z);
@@ -67,5 +71,7 @@ private:
 		20, 21, 22, 20, 22, 23	  //HEF HFG
 	};
 	glm::vec4 color;
-	glm::mat4 position;
+	glm::mat4 modelMatrix;
+
+	void initializeBuffers();
 };

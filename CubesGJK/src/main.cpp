@@ -1,5 +1,5 @@
 #include "Camera.h"
-#include "Cube.h"
+#include "CubeManager.h"
 #include <GL/glew.h>
 #include <GLFW/glfw3.h>
 #include <iostream>
@@ -8,7 +8,7 @@
 #define WINDOW_WIDTH    1020
 #define WINDOW_HEIGHT   860
 
-void processInput(GLFWwindow* window, Camera& camera);
+void processInput(GLFWwindow* window, Camera& camera, glm::vec3& directionalLight);
 
 int main(void)
 {
@@ -38,17 +38,19 @@ int main(void)
 
     glEnable(GL_CULL_FACE);
     glEnable(GL_DEPTH_TEST);
+    glClearColor(1.0f, 1.0f, 1.0f, 1.0f);
 
     glfwSetCursorPos(window, WINDOW_WIDTH * 0.5, WINDOW_HEIGHT * 0.5);
     Camera camera(WINDOW_WIDTH * 0.5, WINDOW_HEIGHT * 0.5);
-    glm::vec3 directionalLight = glm::vec3(2.0f, 2.0f, 0.0f);
-    Cube cube;
+    glm::vec3 directionalLightPosition = glm::vec3(2.0f, 0.0f, 2.0f);
+    Cube cube({ 0.0f, 1.0f, 0.0f });
+    CubeManager cubeManager(50, 3.0f, 2.0f, 1.0f);
     Shader basicShader("res/shaders/basic.shader");
 
     /* Loop until the user closes the window */
     while (!glfwWindowShouldClose(window))
     {
-        processInput(window, camera);
+        processInput(window, camera, directionalLightPosition);
 
         /* Render here */
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
@@ -59,9 +61,11 @@ int main(void)
             .setUniform("view", camera.getViewMatrix())
             .setUniform("projection", glm::perspective(glm::radians(camera.getZoom()), (GLfloat)WINDOW_WIDTH / (GLfloat)WINDOW_HEIGHT, 0.01f, 100.0f))
             .setUniform("u_Color", cube.getColor())
-            .setUniform("directionalLight", directionalLight);
+            .setUniform("directionalLight", directionalLightPosition);
 
         cube.render();
+
+        cubeManager.render(basicShader);
 
         /* Swap front and back buffers */
         glfwSwapBuffers(window);
@@ -74,7 +78,7 @@ int main(void)
     return 0;
 }
 
-void processInput(GLFWwindow* window, Camera& camera)
+void processInput(GLFWwindow* window, Camera& camera, glm::vec3& directionalLight)
 {
     if (glfwGetKey(window, GLFW_KEY_ESCAPE) == GLFW_PRESS)
         glfwSetWindowShouldClose(window, true);
@@ -91,6 +95,19 @@ void processInput(GLFWwindow* window, Camera& camera)
         camera.processKeyboard(UP);
     if (glfwGetKey(window, GLFW_KEY_LEFT_SHIFT) == GLFW_PRESS)
         camera.processKeyboard(DOWN);
+
+    if (glfwGetKey(window, GLFW_KEY_T) == GLFW_PRESS)
+        directionalLight.z -= 0.01f;
+    if (glfwGetKey(window, GLFW_KEY_G) == GLFW_PRESS)
+        directionalLight.z += 0.01f;
+    if (glfwGetKey(window, GLFW_KEY_F) == GLFW_PRESS)
+        directionalLight.x -= 0.01f;
+    if (glfwGetKey(window, GLFW_KEY_H) == GLFW_PRESS)
+        directionalLight.x += 0.01f;
+    if (glfwGetKey(window, GLFW_KEY_Y) == GLFW_PRESS)
+        directionalLight.y += 0.01f;
+    if (glfwGetKey(window, GLFW_KEY_R) == GLFW_PRESS)
+        directionalLight.y -= 0.01f;
 
     GLdouble mousePositionX, mousePositionY;
     glfwGetCursorPos(window, &mousePositionX, &mousePositionY);
