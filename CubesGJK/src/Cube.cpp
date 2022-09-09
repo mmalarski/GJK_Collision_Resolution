@@ -2,14 +2,16 @@
 
 Cube::Cube() : 
 	color(glm::vec4(0.4f)), 
-	modelMatrix(glm::mat4(1.0f))
+	modelMatrix(glm::mat4(1.0f)),
+	movementDirection(glm::vec3(0.0f))
 {
 	initializeBuffers();
 }
 
 Cube::Cube(const glm::vec3& position) : 
 	color(glm::vec4(0.4f)),
-	modelMatrix(glm::mat4(1.0f))
+	modelMatrix(glm::mat4(1.0f)),
+	movementDirection(glm::vec3(0.0f))
 {
 	initializeBuffers();
 	this->setPosition(position);
@@ -57,6 +59,11 @@ void Cube::render() const {
 	 return glm::vec3(this->modelMatrix[3][0], this->modelMatrix[3][1], this->modelMatrix[3][2]);
  }
 
+ const glm::vec3 Cube::getMovementDirection() const
+ {
+	 return this->movementDirection;
+ }
+
  Cube& Cube::setColor(const glm::vec3& color)
  {
 	 this->color = glm::vec4(color.x, color.y, color.z, 1.0f);
@@ -96,6 +103,12 @@ void Cube::render() const {
 	 return *this;
  }
 
+ Cube& Cube::setMovementDirection(const glm::vec3 direction)
+ {
+	 this->movementDirection = direction;
+	 return *this;
+ }
+
  Cube& Cube::moveWithVector(const glm::vec3& vector) 
  {
 	 this->modelMatrix = glm::translate(this->modelMatrix, vector);
@@ -106,6 +119,11 @@ void Cube::render() const {
  {
 	 glm::translate(this->modelMatrix, {x, y, z});
 	 return *this;
+ }
+
+ void Cube::applyGravity()
+ {
+	 this->movementDirection.y += -0.001f;
  }
 
  void Cube::initializeBuffers()

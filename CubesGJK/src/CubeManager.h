@@ -13,6 +13,8 @@ public:
 	void addCube(Cube* cube);
 	const std::vector<Cube*>& getCubes() const;
 	void render(Shader& shader) const;
+	CubeManager& applyGravity();
+	CubeManager& moveCubes();
 private:
 	std::vector<Cube*> cubes;
 };

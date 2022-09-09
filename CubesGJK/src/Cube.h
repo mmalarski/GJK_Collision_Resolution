@@ -24,13 +24,16 @@ public:
 	const glm::vec4 getColor() const;
 	const glm::mat4 getModelMatrix() const;
 	const glm::vec3 getPosition() const;
+	const glm::vec3 getMovementDirection() const;
 	Cube& setColor(const glm::vec3& color);
 	Cube& setColor(const GLfloat& r, const GLfloat& g, const GLfloat& b, const GLfloat& a);
 	Cube& setPosition(const glm::vec3& position);
 	Cube& setPosition(const GLfloat& x, const GLfloat& y, const GLfloat& z);
 	Cube& setScale(const GLfloat& scale);
+	Cube& setMovementDirection(const glm::vec3 direction);
 	Cube& moveWithVector(const glm::vec3& vector);
 	Cube& moveWithVector(const GLfloat& x, const GLfloat& y, const GLfloat& z);
+	void applyGravity();
 
 private:
 	GLuint VBO = 0, VAO = 0, EBO = 0;
@@ -75,6 +78,7 @@ private:
 	};
 	glm::vec4 color;
 	glm::mat4 modelMatrix;
+	glm::vec3 movementDirection;
 
 	void initializeBuffers();
 };
