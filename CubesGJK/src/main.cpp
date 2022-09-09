@@ -39,7 +39,7 @@ int main(void)
 
     glEnable(GL_CULL_FACE);
     glEnable(GL_DEPTH_TEST);
-    glClearColor(1.0f, 1.0f, 1.0f, 1.0f);
+    glClearColor(0.88f, 0.88f, 0.88f, 1.0f);
 
     glfwSetCursorPos(window, WINDOW_WIDTH * 0.5, WINDOW_HEIGHT * 0.5);
     Camera camera(WINDOW_WIDTH * 0.5, WINDOW_HEIGHT * 0.5);
@@ -47,6 +47,7 @@ int main(void)
     Cube cube({ 0.0f, 3.0f, 0.0f });
     CubeManager cubeManager(10, 3.0f, 2.0f, 1.0f);
     Shader basicShader("res/shaders/basic.shader");
+    Shader lightSourceShader("res/shaders/lightSource.shader");
 
     /* Loop until the user closes the window */
     while (!glfwWindowShouldClose(window))
@@ -56,11 +57,13 @@ int main(void)
         /* Render here */
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
+        Shader::setViewAndProjection(camera.getViewMatrix(), glm::perspective(glm::radians(camera.getZoom()), (GLfloat)WINDOW_WIDTH / (GLfloat)WINDOW_HEIGHT, 0.01f, 100.0f));
+
         basicShader
             .use()
             .setUniform("model", cube.getModelMatrix())
-            .setUniform("view", camera.getViewMatrix())
-            .setUniform("projection", glm::perspective(glm::radians(camera.getZoom()), (GLfloat)WINDOW_WIDTH / (GLfloat)WINDOW_HEIGHT, 0.01f, 100.0f))
+            .setUniform("view", Shader::getViewMatrix())
+            .setUniform("projection", Shader::getProjectionMatrix())
             .setUniform("u_Color", cube.getColor())
             .setUniform("directionalLight", directionalLightPosition.getPosition());
         
@@ -68,7 +71,7 @@ int main(void)
 
         cubeManager.render(basicShader);
 
-        directionalLightPosition.render(basicShader);
+        directionalLightPosition.render(lightSourceShader);
 
         /* Swap front and back buffers */
         glfwSwapBuffers(window);

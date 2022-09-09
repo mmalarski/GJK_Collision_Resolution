@@ -25,8 +25,12 @@ public:
 	Shader& setUniform(const std::string& name, const glm::vec3& value);
 	Shader& setUniform(const std::string& name, const glm::vec4& value);
 	Shader& setUniform(const std::string& name, const glm::mat4& value);
+	static void setViewAndProjection(const glm::mat4& view, const glm::mat4& projection);
+	static const glm::mat4 getViewMatrix();
+	static const glm::mat4 getProjectionMatrix();
 private:
 	GLuint id;
+	static glm::mat4 view;
+	static glm::mat4 projection;
 	GLuint compileShader(unsigned int type, const std::string& source);
 };
-

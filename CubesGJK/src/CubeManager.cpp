@@ -35,7 +35,10 @@ void CubeManager::render(Shader& shader) const
 	for (Cube* cube : this->cubes)
 	{
 		shader
+			.use()
 			.setUniform("model", cube->getModelMatrix())
+			.setUniform("view", Shader::getViewMatrix())
+			.setUniform("projection", Shader::getProjectionMatrix())
 			.setUniform("u_Color", cube->getColor());
 		cube->render();
 	}

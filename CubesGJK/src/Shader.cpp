@@ -1,5 +1,8 @@
 #include "Shader.h"
 
+glm::mat4 Shader::view = glm::mat4(1.0f);
+glm::mat4 Shader::projection = glm::mat4(1.0f);
+
 Shader::Shader(const std::string& path)
 {
 	this->id = parseSourceAndCreateShader(path);
@@ -95,6 +98,22 @@ Shader& Shader::setUniform(const std::string& name, const glm::mat4& value)
 	int location = glGetUniformLocation(id, name.c_str());
 	glUniformMatrix4fv(location, 1, GL_FALSE, &value[0][0]);
 	return *this;
+}
+
+void Shader::setViewAndProjection(const glm::mat4& view, const glm::mat4& projection)
+{
+	Shader::view = view;
+	Shader::projection = projection;
+}
+
+const glm::mat4 Shader::getViewMatrix()
+{
+	return Shader::view;
+}
+
+const glm::mat4 Shader::getProjectionMatrix()
+{
+	return Shader::projection;
 }
 
 GLuint Shader::compileShader(unsigned int type, const std::string& source)

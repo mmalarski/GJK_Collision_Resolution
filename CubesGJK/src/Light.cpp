@@ -5,14 +5,16 @@ Light::Light(const glm::vec3& position)
 	this->cube
 		.setPosition(position)
 		.setColor({ 1.0f, 1.0f, 1.0f })
-		.setScale(0.2f);
+		.setScale(0.05f);
 }
 
 void Light::render(Shader& shader) const
 {
 	shader
-		.setUniform("model", this->cube.getModelMatrix())
-		.setUniform("u_Color", this->cube.getColor());
+		.use()
+		.setUniform("view", Shader::getViewMatrix())
+		.setUniform("projection", Shader::getProjectionMatrix())
+		.setUniform("model", this->cube.getModelMatrix());
 	this->cube.render();
 }
 
