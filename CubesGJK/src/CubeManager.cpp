@@ -39,6 +39,7 @@ void CubeManager::render(Shader& shader) const
 			.setUniform("model", cube->getModelMatrix())
 			.setUniform("view", Shader::getViewMatrix())
 			.setUniform("projection", Shader::getProjectionMatrix())
+			.setUniform("pointLightPosition", Shader::getPointLightPosition())
 			.setUniform("u_Color", cube->getColor());
 		cube->render();
 	}
