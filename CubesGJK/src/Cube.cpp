@@ -63,6 +63,11 @@ void Cube::render() const {
 	 return this->movementDirection;
  }
 
+ const glm::vec3* Cube::getVertices() const
+ {
+	 return this->vertices;
+ }
+
  Cube& Cube::setColor(const glm::vec3& color)
  {
 	 this->color = glm::vec4(color.x, color.y, color.z, 1.0f);
@@ -129,7 +134,7 @@ void Cube::render() const {
  {
 	 glGenBuffers(1, &this->VBO);
 	 glBindBuffer(GL_ARRAY_BUFFER, this->VBO);
-	 glBufferData(GL_ARRAY_BUFFER, sizeof(this->vertices), this->vertices, GL_STATIC_DRAW);
+	 glBufferData(GL_ARRAY_BUFFER, sizeof(this->verticesAndNormals), this->verticesAndNormals, GL_STATIC_DRAW);
 
 	 glGenBuffers(1, &this->EBO);
 	 glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, this->EBO);

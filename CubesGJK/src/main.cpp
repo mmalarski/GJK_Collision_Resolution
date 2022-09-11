@@ -1,5 +1,6 @@
 #include "Camera.h"
 #include "CubeManager.h"
+#include "GJKResolver.h"
 #include <GL/glew.h>
 #include <GLFW/glfw3.h>
 #include <iostream>
@@ -55,8 +56,11 @@ int main(void)
     Camera camera(WINDOW_WIDTH * 0.5, WINDOW_HEIGHT * 0.5);
     Light pointLight({ 2.0f, 0.0f, 2.0f });
     CubeManager cubeManager(10, 3.0f, 2.0f, 1.0f);
+    Cube cube;
     Shader basicShader("res/shaders/basic.shader");
     Shader lightSourceShader("res/shaders/lightSource.shader");
+    GJKResolver gjkResolver;
+    gjkResolver.findFurthestPointOnDirection(cube, glm::vec3(0.0f, 1.0f, 0.0f));
 
     /* Loop until the user closes the window */
 

@@ -6,11 +6,22 @@
 #include <GLFW/glfw3.h>
 #include <iostream>
 
-#define CUBE_VERTICES	8
-#define CUBE_INDICES	36
-#define VERTEX_COMPONENTS 3
-#define VERTICES_AND_NORMALS 2
-#define NORMALS_PER_VERTEX 3
+enum CubeInfo
+{
+	A,
+	B,
+	C,
+	D,
+	E,
+	F,
+	G,
+	H,
+	CUBE_VERTICES_NUMBER,
+	CUBE_INDICES = 36,
+	VERTEX_COMPONENTS = 3,
+	VERTICES_AND_NORMALS = 2,
+	NORMALS_PER_VERTEX = 3
+};
 
 class Cube {
 public:
@@ -24,6 +35,7 @@ public:
 	const glm::mat4 getModelMatrix() const;
 	const glm::vec3 getPosition() const;
 	const glm::vec3 getMovementDirection() const;
+	const glm::vec3* getVertices() const;
 	Cube& setColor(const glm::vec3& color);
 	Cube& setColor(const GLfloat& r, const GLfloat& g, const GLfloat& b, const GLfloat& a);
 	Cube& setPosition(const glm::vec3& position);
@@ -36,36 +48,47 @@ public:
 
 private:
 	GLuint VBO = 0, VAO = 0, EBO = 0;
-	GLfloat vertices[CUBE_VERTICES * VERTEX_COMPONENTS * VERTICES_AND_NORMALS * NORMALS_PER_VERTEX] = {
-		  0.5f,  0.5f, -0.5f,  0.0f, 0.0f, -1.0f,	//A 0
-		  0.5f, -0.5f, -0.5f,  0.0f, 0.0f, -1.0f,	//D 1
-		 -0.5f, -0.5f, -0.5f,  0.0f, 0.0f, -1.0f,	//C 2
-		 -0.5f,  0.5f, -0.5f,  0.0f, 0.0f, -1.0f,	//B 3
-							   
-		  0.5f,  0.5f, -0.5f,  0.0f, 1.0f, 0.0f,	//A 4
-		 -0.5f,  0.5f, -0.5f,  0.0f, 1.0f, 0.0f,	//B 5
-		 -0.5f,  0.5f,  0.5f,  0.0f, 1.0f, 0.0f,	//F 6
-		  0.5f,  0.5f,  0.5f,  0.0f, 1.0f, 0.0f,	//E 7
-							   
-		  0.5f,  0.5f, -0.5f,  1.0f, 0.0f, 0.0f,	//A 8
-		  0.5f,  0.5f,  0.5f,  1.0f, 0.0f, 0.0f,	//E 9
-		  0.5f, -0.5f,  0.5f,  1.0f, 0.0f, 0.0f,	//H 10
-		  0.5f, -0.5f, -0.5f,  1.0f, 0.0f, 0.0f,	//D 11
-		
-		 -0.5f,  0.5f, -0.5f, -1.0f, 0.0f, 0.0f,	//B 12
-		 -0.5f, -0.5f, -0.5f, -1.0f, 0.0f, 0.0f,	//C 13
-		 -0.5f, -0.5f,  0.5f, -1.0f, 0.0f, 0.0f,	//G 14
-		 -0.5f,  0.5f,  0.5f, -1.0f, 0.0f, 0.0f,	//F 15
-													
-		 -0.5f, -0.5f, -0.5f, 0.0f, -1.0f, 0.0f,	//C 16
-		  0.5f, -0.5f, -0.5f, 0.0f, -1.0f, 0.0f,	//D 19
-		  0.5f, -0.5f,  0.5f, 0.0f, -1.0f, 0.0f,	//H 18
-		 -0.5f, -0.5f,  0.5f, 0.0f, -1.0f, 0.0f,	//G 17
-							   
-		  0.5f, -0.5f,  0.5f,  0.0f, 0.0f, 1.0f,	//H 20
-		  0.5f,  0.5f,  0.5f,  0.0f, 0.0f, 1.0f, 	//E 21
-		 -0.5f,  0.5f,  0.5f,  0.0f, 0.0f, 1.0f,	//F 22
-		 -0.5f, -0.5f,  0.5f,  0.0f, 0.0f, 1.0f,	//G 23
+	glm::vec3 vertices[CUBE_VERTICES_NUMBER] = {
+		{  0.5f,  0.5f, -0.5f },	//A 0
+		{ -0.5f,  0.5f, -0.5f },	//B 1
+		{ -0.5f, -0.5f, -0.5f },	//C 2
+		{  0.5f, -0.5f, -0.5f },	//D 3
+
+		{  0.5f,  0.5f,  0.5f },	//E 4
+		{ -0.5f,  0.5f,  0.5f },	//F 5
+		{ -0.5f, -0.5f,  0.5f },	//G 6
+		{  0.5f, -0.5f,  0.5f }		//H 7
+	};
+	GLfloat verticesAndNormals[CUBE_VERTICES_NUMBER * VERTEX_COMPONENTS * VERTICES_AND_NORMALS * NORMALS_PER_VERTEX] = {
+		vertices[A].x, vertices[A].y, vertices[A].z,  0.0f,  0.0f, -1.0f,	//A 0
+		vertices[D].x, vertices[D].y, vertices[D].z,  0.0f,  0.0f, -1.0f,	//D 1
+		vertices[C].x, vertices[C].y, vertices[C].z,  0.0f,  0.0f, -1.0f,	//C 2
+		vertices[B].x, vertices[B].y, vertices[B].z,  0.0f,  0.0f, -1.0f,	//B 3
+							   								 
+		vertices[A].x, vertices[A].y, vertices[A].z,  0.0f,  1.0f,  0.0f,	//A 4
+		vertices[B].x, vertices[B].y, vertices[B].z,  0.0f,  1.0f,  0.0f,	//B 5
+		vertices[F].x, vertices[F].y, vertices[F].z,  0.0f,  1.0f,  0.0f,	//F 6
+		vertices[E].x, vertices[E].y, vertices[E].z,  0.0f,  1.0f,  0.0f,	//E 7
+							   								 	   
+		vertices[A].x, vertices[A].y, vertices[A].z,  1.0f,  0.0f,  0.0f,	//A 8
+		vertices[E].x, vertices[E].y, vertices[E].z,  1.0f,  0.0f,  0.0f,	//E 9
+		vertices[H].x, vertices[H].y, vertices[H].z,  1.0f,  0.0f,  0.0f,	//H 10
+		vertices[D].x, vertices[D].y, vertices[D].z,  1.0f,  0.0f,  0.0f,	//D 11
+															 
+		vertices[B].x, vertices[B].y, vertices[B].z, -1.0f,  0.0f,  0.0f,	//B 12
+		vertices[C].x, vertices[C].y, vertices[C].z, -1.0f,  0.0f,  0.0f,	//C 13
+		vertices[G].x, vertices[G].y, vertices[G].z, -1.0f,  0.0f,  0.0f,	//G 14
+		vertices[F].x, vertices[F].y, vertices[F].z, -1.0f,  0.0f,  0.0f,	//F 15
+																   
+		vertices[C].x, vertices[C].y, vertices[C].z,  0.0f, -1.0f,  0.0f,	//C 16
+		vertices[D].x, vertices[D].y, vertices[D].z,  0.0f, -1.0f,  0.0f,	//D 19
+		vertices[H].x, vertices[H].y, vertices[H].z,  0.0f, -1.0f,  0.0f,	//H 18
+		vertices[G].x, vertices[G].y, vertices[G].z,  0.0f, -1.0f,  0.0f,	//G 17
+							   									   
+		vertices[H].x, vertices[H].y, vertices[H].z,  0.0f,  0.0f,  1.0f,	//H 20
+		vertices[E].x, vertices[E].y, vertices[E].z,  0.0f,  0.0f,  1.0f,	//E 21
+		vertices[F].x, vertices[F].y, vertices[F].z,  0.0f,  0.0f,  1.0f,	//F 22
+		vertices[G].x, vertices[G].y, vertices[G].z,  0.0f,  0.0f,  1.0f	//G 23
 	};
 	GLuint indices[CUBE_INDICES] = {
 		0,   1,  2,  0,  2,  3,	  //ADC ACB
