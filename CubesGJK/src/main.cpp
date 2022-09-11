@@ -60,7 +60,6 @@ int main(void)
     Shader basicShader("res/shaders/basic.shader");
     Shader lightSourceShader("res/shaders/lightSource.shader");
     GJKResolver gjkResolver;
-    gjkResolver.findFurthestPointOnDirection(cube, glm::vec3(0.0f, 1.0f, 0.0f));
 
     /* Loop until the user closes the window */
 

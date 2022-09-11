@@ -127,7 +127,7 @@ void Cube::render() const {
 
  void Cube::applyGravity(const GLdouble& deltaTime)
  {
-	 this->movementDirection.y += -0.00001f * deltaTime;
+	 this->movementDirection.y += -0.00001 * deltaTime;
  }
 
  void Cube::initializeBuffers()
