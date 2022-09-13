@@ -33,6 +33,11 @@ void Cube::render() const {
 	glDrawElements(GL_TRIANGLES, CUBE_INDICES, GL_UNSIGNED_INT, 0);
 }
 
+void Cube::resetColor()
+{
+	this->setColor(glm::vec3(0.4f));
+}
+
  const GLuint Cube::getVAO() const
 {
 	return this->VAO;
@@ -51,6 +56,11 @@ void Cube::render() const {
  const glm::mat4 Cube::getModelMatrix() const
  {
 	 return this->modelMatrix;
+ }
+
+ const glm::mat4 Cube::getModelMatrixTransposed() const
+ {
+	 return glm::transpose(this->modelMatrix);
  }
 
  const glm::vec3 Cube::getPosition() const

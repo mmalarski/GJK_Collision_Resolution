@@ -136,6 +136,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="src\Simplex.cpp" />
     <ClCompile Include="src\GJKResolver.cpp" />
     <ClCompile Include="src\Light.cpp" />
     <ClCompile Include="src\CubeManager.cpp" />

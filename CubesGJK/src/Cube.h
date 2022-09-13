@@ -29,10 +29,12 @@ public:
 	Cube(const glm::vec3& position);
 	~Cube();
 	void render() const;
+	void resetColor();
 	const GLuint getVAO() const;
 	const GLuint getVBO() const;
 	const glm::vec4 getColor() const;
 	const glm::mat4 getModelMatrix() const;
+	const glm::mat4 getModelMatrixTransposed() const;
 	const glm::vec3 getPosition() const;
 	const glm::vec3 getMovementDirection() const;
 	const glm::vec3* getVertices() const;
@@ -100,6 +102,7 @@ private:
 	};
 	glm::vec4 color;
 	glm::mat4 modelMatrix;
+	glm::mat4 modelMatrixTransposed;
 	glm::vec3 movementDirection;
 
 	void initializeBuffers();

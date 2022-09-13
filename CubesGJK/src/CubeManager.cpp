@@ -25,6 +25,11 @@ void CubeManager::addCube(Cube* cube)
 	this->cubes.push_back(cube);
 }
 
+void CubeManager::resetCubeColor(Cube& cube)
+{
+	cube.setColor({ 0.98f, 0.72f, 0.01f });
+}
+
 const std::vector<Cube*>& CubeManager::getCubes() const
 {
 	return this->cubes;
@@ -80,6 +85,30 @@ CubeManager& CubeManager::moveCubes(const GLdouble& deltaTime)
 			cube->setPosition(cube->getPosition().x, 0.0f, cube->getPosition().z);
 		}
 		cube->moveWithVector(cube->getMovementDirection());
+	}
+	return *this;
+}
+
+CubeManager& CubeManager::resolveCollisions()
+{
+	for (Cube* cube1 : this->cubes)
+	{
+		for (Cube* cube2 : this->cubes)
+		{
+			if (cube1 != cube2)
+			{
+				if (this->gjkResolver.areCubesColliding(*cube1, *cube2))
+				{
+					cube1->setColor(glm::vec3(1.0f, 0.0f, 0.0f));
+					cube2->setColor(glm::vec3(1.0f, 0.0f, 0.0f));
+				}
+				//else
+				//{
+				//	this->resetCubeColor(*cube1);
+				//	this->resetCubeColor(*cube2);
+				//}
+			}
+		}
 	}
 	return *this;
 }

@@ -1,6 +1,5 @@
 #include "Camera.h"
 #include "CubeManager.h"
-#include "GJKResolver.h"
 #include <GL/glew.h>
 #include <GLFW/glfw3.h>
 #include <iostream>
@@ -16,7 +15,7 @@ struct GameLoop
     GLint64 currentTime;
     GLint64 elapsedTime;
     GLint64 deltaTime;
-    const GLint64 SECONDS_PER_FRAME = 1 / 60;
+    const GLint64 SECONDS_PER_FRAME = 1 / 20;
 };
 
 void processInput(GLFWwindow* window, Camera& camera, Light& directionalLight, CubeManager& cubeManager);
@@ -56,19 +55,17 @@ int main(void)
     Camera camera(WINDOW_WIDTH * 0.5, WINDOW_HEIGHT * 0.5);
     Light pointLight({ 2.0f, 0.0f, 2.0f });
     CubeManager cubeManager(10, 3.0f, 2.0f, 1.0f);
-    Cube cube;
     Shader basicShader("res/shaders/basic.shader");
     Shader lightSourceShader("res/shaders/lightSource.shader");
-    GJKResolver gjkResolver;
 
     /* Loop until the user closes the window */
 
     GameLoop gameLoop;
-    gameLoop.previousTime = glfwGetTime();
-    gameLoop.deltaTime = 0.0;
+    gameLoop.previousTime = (GLint64)glfwGetTime();
+    gameLoop.deltaTime = 0;
     while (!glfwWindowShouldClose(window))
     {
-        gameLoop.currentTime = glfwGetTime();
+        gameLoop.currentTime = (GLint64)glfwGetTime();
         gameLoop.elapsedTime = gameLoop.currentTime - gameLoop.previousTime;
         gameLoop.previousTime = gameLoop.currentTime;
         gameLoop.deltaTime += gameLoop.elapsedTime;
@@ -82,7 +79,9 @@ int main(void)
                 cubeManager);
 
             cubeManager
-                .moveCubes(gameLoop.deltaTime);
+                .resolveCollisions()
+                .moveCubes((GLint64)gameLoop.deltaTime);
+
             gameLoop.deltaTime -= gameLoop.SECONDS_PER_FRAME;
         }
 
