@@ -11,14 +11,14 @@
 
 struct GameLoop
 {
-    GLint64 previousTime;
-    GLint64 currentTime;
-    GLint64 elapsedTime;
-    GLint64 deltaTime;
-    const GLint64 SECONDS_PER_FRAME = 1 / 20;
+    GLdouble previousTime;
+    GLdouble currentTime;
+    GLdouble elapsedTime;
+    GLdouble deltaTime;
+    const GLdouble SECONDS_PER_FRAME = 1 / 60;
 };
 
-void processInput(GLFWwindow* window, Camera& camera, Light& directionalLight, CubeManager& cubeManager);
+void processInput(GLFWwindow* window, Camera& camera, Light& directionalLight, CubeManager& cubeManager, Cube& cube);
 
 int main(void)
 {
@@ -58,14 +58,20 @@ int main(void)
     Shader basicShader("res/shaders/basic.shader");
     Shader lightSourceShader("res/shaders/lightSource.shader");
 
+    Cube cube1({ -1.0f, 2.2f, 0.2f });
+    Cube cube2({ 1.0f, 2.2f, 0.2f  });
+    GJKResolver gjkResolver;
+
     /* Loop until the user closes the window */
 
     GameLoop gameLoop;
-    gameLoop.previousTime = (GLint64)glfwGetTime();
+    GLuint64 frequency = glfwGetTimerFrequency();
+    Print(frequency);
+    gameLoop.previousTime = glfwGetTimerValue() * 0.001;
     gameLoop.deltaTime = 0;
     while (!glfwWindowShouldClose(window))
     {
-        gameLoop.currentTime = (GLint64)glfwGetTime();
+        gameLoop.currentTime = glfwGetTimerValue() * 0.001;
         gameLoop.elapsedTime = gameLoop.currentTime - gameLoop.previousTime;
         gameLoop.previousTime = gameLoop.currentTime;
         gameLoop.deltaTime += gameLoop.elapsedTime;
@@ -76,11 +82,27 @@ int main(void)
                 window, 
                 camera, 
                 pointLight,
-                cubeManager);
+                cubeManager,
+                cube1);
+
+            if (gjkResolver.areCubesColliding(cube1, cube2))
+            {
+                cube1.setColor({ 1.0f, 0.0f, 0.0f });
+                cube2.setColor({ 1.0f, 0.0f, 0.0f });
+                cube2.setNextMovementVector(gjkResolver.getSeparationVector());
+            }
+            else
+            {
+                cube1.resetColor();
+                cube2.resetColor();
+            }
 
             cubeManager
-                .resolveCollisions()
-                .moveCubes((GLint64)gameLoop.deltaTime);
+                //.resolveCollisions()
+                .moveCubes((GLint64)gameLoop.elapsedTime);
+
+            cube1.applyNextMovementVectors();
+            cube2.applyNextMovementVectors();
 
             gameLoop.deltaTime -= gameLoop.SECONDS_PER_FRAME;
         }
@@ -93,6 +115,18 @@ int main(void)
         cubeManager.render(basicShader);
         pointLight.render(lightSourceShader);
 
+        basicShader
+            .use()
+            .setUniform("u_Color", cube1.getColor())
+            .setUniform("model", cube1.getModelMatrix());
+        cube1.render();
+
+        basicShader
+            .use()
+            .setUniform("u_Color", cube2.getColor())
+            .setUniform("model", cube2.getModelMatrix());
+        cube2.render();
+
         /* Swap front and back buffers */
         glfwSwapBuffers(window);
 
@@ -104,7 +138,7 @@ int main(void)
     return 0;
 }
 
-void processInput(GLFWwindow* window, Camera& camera, Light& directionalLight, CubeManager& cubeManager)
+void processInput(GLFWwindow* window, Camera& camera, Light& directionalLight, CubeManager& cubeManager, Cube& cube)
 {
     if (glfwGetKey(window, GLFW_KEY_ESCAPE) == GLFW_PRESS)
         glfwSetWindowShouldClose(window, true);
@@ -135,8 +169,13 @@ void processInput(GLFWwindow* window, Camera& camera, Light& directionalLight, C
     if (glfwGetKey(window, GLFW_KEY_R) == GLFW_PRESS)
         directionalLight.move({ 0.0f, -0.01f, 0.0f });
 
+    if (glfwGetKey(window, GLFW_KEY_COMMA) == GLFW_PRESS)
+        cube.setNextMovementVector({ -0.01f, 0.0f, 0.0f });
+    if (glfwGetKey(window, GLFW_KEY_SLASH) == GLFW_PRESS)
+        cube.setNextMovementVector({ 0.01f, 0.0f, 0.0f });
+
     if (glfwGetKey(window, GLFW_KEY_J) == GLFW_PRESS)
-        cubeManager.setCubesMovementDirection(glm::vec3(0.0f, 0.01f, 0.0f));
+        cubeManager.setCubesForceVector(glm::vec3(0.0f, 0.05f, 0.0f));
 
     GLdouble mousePositionX, mousePositionY;
     glfwGetCursorPos(window, &mousePositionX, &mousePositionY);

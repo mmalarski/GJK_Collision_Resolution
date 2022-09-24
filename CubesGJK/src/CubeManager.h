@@ -6,19 +6,21 @@
 #include <random>
 #include "Shader.h"
 #include <vector>
+#include <set>
 
 class CubeManager
 {
 public:
 	CubeManager(const GLuint& cubeNumber, const GLfloat& rangeOnXAxis, const GLfloat& rangeOnZAxis, const GLfloat& height);
 	const std::vector<Cube*>& getCubes() const;
-	void addCube(Cube* cube);
+	CubeManager& addCube(Cube* cube);
 	void resetCubeColor(Cube& cube);
 	void render(Shader& shader) const;
 
 	CubeManager& setCubesHeight(const GLfloat& height);
-	CubeManager& setCubesMovementDirection(const glm::vec3& force);
-	CubeManager& moveCubes(const GLdouble& deltaTime);
+	CubeManager& setCubesNextMovementVector(const glm::vec3& vector);
+	CubeManager& setCubesForceVector(const glm::vec3& vector);
+	CubeManager& moveCubes(const GLint64& elapsedTime);
 	CubeManager& resolveCollisions();
 
 private:

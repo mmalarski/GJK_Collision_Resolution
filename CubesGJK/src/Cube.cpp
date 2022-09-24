@@ -3,7 +3,9 @@
 Cube::Cube() : 
 	color(glm::vec4(0.4f)), 
 	modelMatrix(glm::mat4(1.0f)),
-	movementDirection(glm::vec3(0.0f))
+	nextMovementVector(glm::vec3(0.0f)),
+	currentGravityVector(glm::vec3(0.0f)),
+	currentForceVector(glm::vec3(0.0f))
 {
 	initializeBuffers();
 }
@@ -11,7 +13,9 @@ Cube::Cube() :
 Cube::Cube(const glm::vec3& position) : 
 	color(glm::vec4(0.4f)),
 	modelMatrix(glm::mat4(1.0f)),
-	movementDirection(glm::vec3(0.0f))
+	nextMovementVector(glm::vec3(0.0f)),
+	currentGravityVector(glm::vec3(0.0f)),
+	currentForceVector(glm::vec3(0.0f))
 {
 	initializeBuffers();
 	this->setPosition(position);
@@ -68,9 +72,24 @@ void Cube::resetColor()
 	 return glm::vec3(this->modelMatrix[3][0], this->modelMatrix[3][1], this->modelMatrix[3][2]);
  }
 
- const glm::vec3 Cube::getMovementDirection() const
+ const glm::vec3 Cube::getNextMovementVector() const
  {
-	 return this->movementDirection;
+	 return this->nextMovementVector;
+ }
+
+ const glm::vec3* Cube::getVertices() const
+ {
+	 return this->vertices;
+ }
+
+ const glm::vec3 Cube::getCurrentGravityVector() const
+ {
+	 return this->currentGravityVector;
+ }
+
+ const glm::vec3 Cube::getCurrentForceVector() const
+ {
+	 return this->currentForceVector;
  }
 
  const glm::vec3* Cube::getVertices() const
@@ -117,10 +136,27 @@ void Cube::resetColor()
 	 return *this;
  }
 
- Cube& Cube::setMovementDirection(const glm::vec3 direction)
+ Cube& Cube::setNextMovementVector(const glm::vec3& vector)
  {
-	 this->movementDirection = direction;
+	 this->nextMovementVector = vector;
 	 return *this;
+ }
+
+ Cube& Cube::setGravityVector(const glm::vec3& vector)
+ {
+	 this->currentGravityVector = vector;
+	 return *this;
+ }
+
+ Cube& Cube::setForceVector(const glm::vec3& vector)
+ {
+	 this->currentForceVector = vector;
+	 return *this;
+ }
+
+ void Cube::addToNextMovementVector(const glm::vec3& vector)
+ {
+	 this->nextMovementVector += vector;
  }
 
  Cube& Cube::moveWithVector(const glm::vec3& vector) 
@@ -135,9 +171,16 @@ void Cube::resetColor()
 	 return *this;
  }
 
- void Cube::applyGravity(const GLdouble& deltaTime)
+ void Cube::applyGravity(const GLint64& elapsedTime)
  {
-	 this->movementDirection.y += -0.00001 * deltaTime;
+	 this->currentGravityVector.y += -0.00001 * elapsedTime;
+	 Print(elapsedTime);
+ }
+
+ void Cube::applyNextMovementVectors()
+ {
+	 this->setPosition(this->getPosition() + this->nextMovementVector + this->currentGravityVector + this->currentForceVector);
+	 this->nextMovementVector = glm::vec3(0.0f);
  }
 
  void Cube::initializeBuffers()

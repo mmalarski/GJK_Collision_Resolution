@@ -2,11 +2,7 @@
 
 GJKResolver::Simplex::Simplex()
 {
-	this->points = {
-		glm::vec3(0.0f),
-		glm::vec3(0.0f),
-		glm::vec3(0.0f),
-		glm::vec3(0.0f) };
+	this->points = { glm::vec3(0.0f) };
 	this->size = 0;
 }
 
@@ -46,6 +42,11 @@ void GJKResolver::Simplex::pushFront(const glm::vec3& point)
 GLuint GJKResolver::Simplex::getSize() const
 {
 	return this->size;
+}
+
+const std::array<glm::vec3, 4> GJKResolver::Simplex::getSimplexPoints() const
+{
+	return this->points;
 }
 
 auto GJKResolver::Simplex::begin() const
@@ -164,4 +165,13 @@ GLboolean GJKResolver::Simplex::Tetrahedron(glm::vec3& direction)
 	}
 
 	return true;
+}
+
+GJKResolver::Simplex& GJKResolver::Simplex::sort()
+{
+	std::sort(this->points.begin(), this->points.end(), [](glm::vec3 p1, glm::vec3 p2)
+		{
+			return glm::length(p1) < glm::length(p2);
+		});
+	return *this;
 }

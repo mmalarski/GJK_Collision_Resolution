@@ -20,9 +20,10 @@ CubeManager::CubeManager(const GLuint& cubeNumber, const GLfloat& rangeOnXAxis, 
 	}
 }
 
-void CubeManager::addCube(Cube* cube)
+CubeManager& CubeManager::addCube(Cube* cube)
 {
 	this->cubes.push_back(cube);
+	return *this;
 }
 
 void CubeManager::resetCubeColor(Cube& cube)
@@ -63,29 +64,67 @@ CubeManager& CubeManager::setCubesHeight(const GLfloat& height)
 	return *this;
 }
 
-CubeManager& CubeManager::setCubesMovementDirection(const glm::vec3& force)
+CubeManager& CubeManager::setCubesNextMovementVector(const glm::vec3& vector)
 {
 	for (Cube* cube : this->cubes)
 	{
-		cube->setMovementDirection(force);
+		cube->setNextMovementVector(vector);
 	}
 	return *this;
 }
 
-CubeManager& CubeManager::moveCubes(const GLdouble& deltaTime)
+CubeManager& CubeManager::setCubesForceVector(const glm::vec3& vector)
+{
+	for (Cube* cube : this->cubes)
+	{
+		cube->setForceVector(vector);
+	}
+	return *this;
+}
+
+CubeManager& CubeManager::moveCubes(const GLint64& elapsedTime)
 {
 	for (Cube* cube : this->cubes)
 	{
 		if (cube->getPosition().y > 0.0f)
 		{
-			cube->applyGravity(deltaTime);
+			cube->applyGravity(elapsedTime);
 		}
-		else
+		else if (cube->getPosition().y != 0.0f)
 		{
 			cube->setPosition(cube->getPosition().x, 0.0f, cube->getPosition().z);
+			cube->setGravityVector(glm::vec3(0.0f));
+			cube->setForceVector(glm::vec3(0.0f));
 		}
-		cube->moveWithVector(cube->getMovementDirection());
+		cube->applyNextMovementVectors();
 	}
+	return *this;
+}
+
+CubeManager& CubeManager::resolveCollisions()
+{
+	std::set<CollidingCubes*> collidingCubes;
+	for (Cube* cube1 : this->cubes)
+	{
+		for (Cube* cube2 : this->cubes)
+		{
+			if (cube1 != cube2)
+			{
+				if (this->gjkResolver.areCubesColliding(*cube1, *cube2))
+				{
+					collidingCubes.insert(new CollidingCubes(*cube1, *cube2, gjkResolver.getSeparationVector()));
+				}
+			}
+		}
+	}
+	for (CollidingCubes* cubes : collidingCubes)
+	{
+		cubes->cube1.setColor(glm::vec3(1.0f, 0.0f, 0.0f));
+		cubes->cube2.setColor(glm::vec3(1.0f, 0.0f, 0.0f));
+		cubes->cube1.setNextMovementVector(-cubes->separationVector * 0.5f);
+		cubes->cube2.setNextMovementVector(cubes->separationVector * 0.5f);
+	}
+	collidingCubes.clear();
 	return *this;
 }
 

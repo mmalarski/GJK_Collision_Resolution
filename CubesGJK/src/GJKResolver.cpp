@@ -1,7 +1,17 @@
 #include "GJKResolver.h"
 
+GJKResolver::GJKResolver() :
+	separationVector(glm::vec3(0.0f))
+{}
+
+const glm::vec3 GJKResolver::getSeparationVector() const
+{
+	return this->separationVector;
+}
+
 GLboolean GJKResolver::areCubesColliding(const Cube& cube1, const Cube& cube2)
 {
+	this->separationVector = glm::vec3(0.0f);
 	glm::vec3 supportPoint = this->findSupportPointOnDirection(cube1, cube2, glm::vec3(1.0f, 0.0f, 0.0f));
 	Simplex simplex;
 	simplex.pushFront(supportPoint);
@@ -20,6 +30,9 @@ GLboolean GJKResolver::areCubesColliding(const Cube& cube1, const Cube& cube2)
 		
 		if (simplex.isOriginInSimplex(direction))
 		{
+			this->separationVector = simplex
+				.sort()
+				.getSimplexPoints()[0];
 			return true;
 		}
 	}
