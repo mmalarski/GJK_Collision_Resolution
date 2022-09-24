@@ -92,11 +92,6 @@ void Cube::resetColor()
 	 return this->currentForceVector;
  }
 
- const glm::vec3* Cube::getVertices() const
- {
-	 return this->vertices;
- }
-
  Cube& Cube::setColor(const glm::vec3& color)
  {
 	 this->color = glm::vec4(color.x, color.y, color.z, 1.0f);

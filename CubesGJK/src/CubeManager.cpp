@@ -127,27 +127,3 @@ CubeManager& CubeManager::resolveCollisions()
 	collidingCubes.clear();
 	return *this;
 }
-
-CubeManager& CubeManager::resolveCollisions()
-{
-	for (Cube* cube1 : this->cubes)
-	{
-		for (Cube* cube2 : this->cubes)
-		{
-			if (cube1 != cube2)
-			{
-				if (this->gjkResolver.areCubesColliding(*cube1, *cube2))
-				{
-					cube1->setColor(glm::vec3(1.0f, 0.0f, 0.0f));
-					cube2->setColor(glm::vec3(1.0f, 0.0f, 0.0f));
-				}
-				//else
-				//{
-				//	this->resetCubeColor(*cube1);
-				//	this->resetCubeColor(*cube2);
-				//}
-			}
-		}
-	}
-	return *this;
-}
