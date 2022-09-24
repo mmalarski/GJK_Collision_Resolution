@@ -11,6 +11,7 @@ public:
 	void render(Shader& shader) const;
 	void move(const glm::vec3& direction);
 	const glm::vec3 getPosition() const;
+	Cube& getCube();
 	
 private:
 	Cube cube;

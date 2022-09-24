@@ -27,3 +27,8 @@ const glm::vec3 Light::getPosition() const
 {
 	return this->cube.getPosition();
 }
+
+Cube& Light::getCube()
+{
+	return this->cube;
+}

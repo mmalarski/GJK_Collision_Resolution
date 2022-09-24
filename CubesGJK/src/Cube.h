@@ -4,6 +4,7 @@
 #include <glm/gtc/matrix_transform.hpp>
 #include <GL/glew.h>
 #include <GLFW/glfw3.h>
+#include "macros.h"
 #include <iostream>
 
 #define CUBE_VERTICES	8
@@ -23,16 +24,23 @@ public:
 	const glm::vec4 getColor() const;
 	const glm::mat4 getModelMatrix() const;
 	const glm::vec3 getPosition() const;
-	const glm::vec3 getMovementDirection() const;
+	const glm::vec3 getNextMovementVector() const;
+	const glm::vec3* getVertices() const;
+	const glm::vec3 getCurrentGravityVector() const;
+	const glm::vec3 getCurrentForceVector() const;
 	Cube& setColor(const glm::vec3& color);
 	Cube& setColor(const GLfloat& r, const GLfloat& g, const GLfloat& b, const GLfloat& a);
 	Cube& setPosition(const glm::vec3& position);
 	Cube& setPosition(const GLfloat& x, const GLfloat& y, const GLfloat& z);
 	Cube& setScale(const GLfloat& scale);
-	Cube& setMovementDirection(const glm::vec3 direction);
+	Cube& setNextMovementVector(const glm::vec3& vector);
+	Cube& setGravityVector(const glm::vec3& vector);
+	Cube& setForceVector(const glm::vec3& vector);
 	Cube& moveWithVector(const glm::vec3& vector);
 	Cube& moveWithVector(const GLfloat& x, const GLfloat& y, const GLfloat& z);
-	void applyGravity(const GLdouble& deltaTime);
+	void addToNextMovementVector(const glm::vec3& vector);
+	void applyGravity(const GLint64& elapsedTime);
+	void applyNextMovementVectors();
 
 private:
 	GLuint VBO = 0, VAO = 0, EBO = 0;
@@ -77,7 +85,9 @@ private:
 	};
 	glm::vec4 color;
 	glm::mat4 modelMatrix;
-	glm::vec3 movementDirection;
+	glm::vec3 nextMovementVector;
+	glm::vec3 currentGravityVector;
+	glm::vec3 currentForceVector;
 
 	void initializeBuffers();
 };
