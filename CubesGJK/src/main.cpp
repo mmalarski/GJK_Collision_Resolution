@@ -58,7 +58,7 @@ int main(void)
     Shader basicShader("res/shaders/basic.shader");
     Shader lightSourceShader("res/shaders/lightSource.shader");
 
-    Cube cube1({ -1.0f, 2.2f, 0.2f });
+    Cube cube1({ -1.0f, 2.2f, 0.0f });
     Cube cube2({ 1.0f, 2.2f, 0.2f  });
     GJKResolver gjkResolver;
 
@@ -89,7 +89,6 @@ int main(void)
             {
                 cube1.setColor({ 1.0f, 0.0f, 0.0f });
                 cube2.setColor({ 1.0f, 0.0f, 0.0f });
-                cube2.setNextMovementVector(gjkResolver.getSeparationVector());
             }
             else
             {

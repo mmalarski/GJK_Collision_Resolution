@@ -112,7 +112,6 @@ private:
 	glm::vec3 nextMovementVector;
 	glm::vec3 currentGravityVector;
 	glm::vec3 currentForceVector;
-	glm::mat4 modelMatrixTransposed;
 
 	void initializeBuffers();
 };
