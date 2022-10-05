@@ -134,6 +134,12 @@ void Cube::resetColor()
 	 return *this;
  }
 
+ Cube& Cube::setRotation(const GLfloat& angles, const glm::vec3& axis)
+ {
+	 this->modelMatrix = glm::rotate(this->modelMatrix, glm::radians(angles), axis);
+	 return *this;
+ }
+
  Cube& Cube::setScale(const GLfloat& scale)
  {
 	 this->modelMatrix[0][0] = scale;

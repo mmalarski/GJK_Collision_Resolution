@@ -46,6 +46,7 @@ public:
 	Cube& setColor(const GLfloat& r, const GLfloat& g, const GLfloat& b, const GLfloat& a);
 	Cube& setPosition(const glm::vec3& position);
 	Cube& setPosition(const GLfloat& x, const GLfloat& y, const GLfloat& z);
+	Cube& setRotation(const GLfloat& angles, const glm::vec3& axis);
 	Cube& setScale(const GLfloat& scale);
 	Cube& setNextMovementVector(const glm::vec3& vector);
 	Cube& setGravityVector(const glm::vec3& vector);

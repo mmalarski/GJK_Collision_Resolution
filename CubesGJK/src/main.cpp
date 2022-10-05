@@ -62,6 +62,10 @@ int main(void)
     Cube cube2({ 1.0f, 2.2f, 0.2f  });
     GJKResolver gjkResolver;
 
+    cube1
+        .setScale(2.0f)
+        .setRotation(30.0f, glm::vec3(0.0f, 1.0f, 0.0f));
+
     /* Loop until the user closes the window */
 
     GameLoop gameLoop;
