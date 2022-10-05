@@ -9,6 +9,11 @@ const glm::vec3 GJKResolver::getSeparationVector() const
 	return this->separationVector;
 }
 
+GLboolean GJKResolver::areCubesNotColliding(const Cube& cube1, const Cube& cube2)
+{
+	return ~this->areCubesColliding(cube1, cube2);
+}
+
 GLboolean GJKResolver::areCubesColliding(const Cube& cube1, const Cube& cube2)
 {
 	this->separationVector = glm::vec3(0.0f);

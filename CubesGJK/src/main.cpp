@@ -66,7 +66,6 @@ int main(void)
 
     GameLoop gameLoop;
     GLuint64 frequency = glfwGetTimerFrequency();
-    Print(frequency);
     gameLoop.previousTime = glfwGetTimerValue() * 0.001;
     gameLoop.deltaTime = 0;
     while (!glfwWindowShouldClose(window))
@@ -85,7 +84,7 @@ int main(void)
                 cubeManager,
                 cube1);
 
-            if (gjkResolver.areCubesColliding(cube1, cube2))
+            if (gjkResolver.areCubesColliding(cube1.simulateNextPosition(), cube2.simulateNextPosition()))
             {
                 cube1.setColor({ 1.0f, 0.0f, 0.0f });
                 cube2.setColor({ 1.0f, 0.0f, 0.0f });
@@ -94,14 +93,13 @@ int main(void)
             {
                 cube1.resetColor();
                 cube2.resetColor();
+            
+                cube1.applyNextMovementVectors();
+                cube2.applyNextMovementVectors();
             }
 
-            cubeManager
-                //.resolveCollisions()
-                .moveCubes((GLint64)gameLoop.elapsedTime);
-
-            cube1.applyNextMovementVectors();
-            cube2.applyNextMovementVectors();
+            cubeManager;
+                //.resolveCollisions((GLint64)gameLoop.elapsedTime);
 
             gameLoop.deltaTime -= gameLoop.SECONDS_PER_FRAME;
         }
@@ -169,9 +167,13 @@ void processInput(GLFWwindow* window, Camera& camera, Light& directionalLight, C
         directionalLight.move({ 0.0f, -0.01f, 0.0f });
 
     if (glfwGetKey(window, GLFW_KEY_COMMA) == GLFW_PRESS)
-        cube.setNextMovementVector({ -0.01f, 0.0f, 0.0f });
+        cube.setNextMovementVector({ -0.001f, 0.0f, 0.0f });
     if (glfwGetKey(window, GLFW_KEY_SLASH) == GLFW_PRESS)
-        cube.setNextMovementVector({ 0.01f, 0.0f, 0.0f });
+        cube.setNextMovementVector({ 0.001f, 0.0f, 0.0f });
+    if (glfwGetKey(window, GLFW_KEY_PERIOD) == GLFW_PRESS)
+        cube.setNextMovementVector({ 0.0f, 0.0f, 0.001f });
+    if (glfwGetKey(window, GLFW_KEY_L) == GLFW_PRESS)
+        cube.setNextMovementVector({ 0.0f, 0.0f, -0.001f });
 
     if (glfwGetKey(window, GLFW_KEY_J) == GLFW_PRESS)
         cubeManager.setCubesForceVector(glm::vec3(0.0f, 0.05f, 0.0f));

@@ -21,7 +21,7 @@ public:
 	CubeManager& setCubesNextMovementVector(const glm::vec3& vector);
 	CubeManager& setCubesForceVector(const glm::vec3& vector);
 	CubeManager& moveCubes(const GLint64& elapsedTime);
-	CubeManager& resolveCollisions();
+	CubeManager& resolveCollisions(const GLint64& elapsedTime);
 
 private:
 	std::vector<Cube*> cubes;

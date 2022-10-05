@@ -101,29 +101,20 @@ CubeManager& CubeManager::moveCubes(const GLint64& elapsedTime)
 	return *this;
 }
 
-CubeManager& CubeManager::resolveCollisions()
+CubeManager& CubeManager::resolveCollisions(const GLint64& elapsedTime)
 {
-	std::set<CollidingCubes*> collidingCubes;
 	for (Cube* cube1 : this->cubes)
 	{
 		for (Cube* cube2 : this->cubes)
 		{
 			if (cube1 != cube2)
 			{
-				if (this->gjkResolver.areCubesColliding(*cube1, *cube2))
+				if (this->gjkResolver.areCubesNotColliding(cube1->simulateNextPosition(), cube2->simulateNextPosition()))
 				{
-					collidingCubes.insert(new CollidingCubes(*cube1, *cube2, gjkResolver.getSeparationVector()));
+					this->moveCubes(elapsedTime);
 				}
 			}
 		}
 	}
-	for (CollidingCubes* cubes : collidingCubes)
-	{
-		cubes->cube1.setColor(glm::vec3(1.0f, 0.0f, 0.0f));
-		cubes->cube2.setColor(glm::vec3(1.0f, 0.0f, 0.0f));
-		cubes->cube1.setNextMovementVector(-cubes->separationVector * 0.5f);
-		cubes->cube2.setNextMovementVector(cubes->separationVector * 0.5f);
-	}
-	collidingCubes.clear();
 	return *this;
 }

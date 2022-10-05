@@ -10,6 +10,17 @@ Cube::Cube() :
 	initializeBuffers();
 }
 
+Cube::Cube(const Cube& cube) :
+	color(cube.getColor()),
+	modelMatrix(cube.getModelMatrix()),
+	nextMovementVector(cube.getNextMovementVector()),
+	currentGravityVector(cube.getCurrentGravityVector()),
+	currentForceVector(cube.getCurrentForceVector())
+{
+	initializeBuffers();
+	this->setPosition(cube.getPosition());
+}
+
 Cube::Cube(const glm::vec3& position) : 
 	color(glm::vec4(0.4f)),
 	modelMatrix(glm::mat4(1.0f)),
@@ -164,6 +175,13 @@ void Cube::resetColor()
  {
 	 glm::translate(this->modelMatrix, {x, y, z});
 	 return *this;
+ }
+
+ Cube Cube::simulateNextPosition() const
+ {
+	 Cube simulatedCube = Cube(*this);
+	 simulatedCube.setPosition(this->getPosition() + 2.0f * this->nextMovementVector + 2.0f * this->currentGravityVector + 2.0f * this->currentForceVector);
+	 return simulatedCube;
  }
 
  void Cube::applyGravity(const GLint64& elapsedTime)

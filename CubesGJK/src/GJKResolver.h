@@ -20,6 +20,7 @@ class GJKResolver
 public:
 	GJKResolver();
 	const glm::vec3 getSeparationVector() const;
+	GLboolean areCubesNotColliding(const Cube& cube1, const Cube& cube2);
 	GLboolean areCubesColliding(const Cube& cube1, const Cube& cube2);
 
 private:

@@ -27,6 +27,7 @@ enum CubeInfo
 class Cube {
 public:
 	Cube();
+	Cube(const Cube& cube);
 	Cube(const glm::vec3& position);
 	~Cube();
 	void render() const;
@@ -51,6 +52,7 @@ public:
 	Cube& setForceVector(const glm::vec3& vector);
 	Cube& moveWithVector(const glm::vec3& vector);
 	Cube& moveWithVector(const GLfloat& x, const GLfloat& y, const GLfloat& z);
+	Cube simulateNextPosition() const;
 	void addToNextMovementVector(const glm::vec3& vector);
 	void applyGravity(const GLint64& elapsedTime);
 	void applyNextMovementVectors();
