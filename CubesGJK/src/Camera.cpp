@@ -8,7 +8,7 @@ Camera::Camera(const GLdouble& initialMousePositionX, const GLdouble& initialMou
 	worldUp(this->up),
 	yaw(-90.0f),
 	pitch(0.0f),
-	movementSpeed(0.01f),
+	movementSpeed(0.05f),
 	zoom(45.0f),
 	mousePositionX(initialMousePositionX),
 	mousePositionY(initialMousePositionY),

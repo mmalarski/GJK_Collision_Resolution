@@ -192,8 +192,7 @@ void Cube::resetColor()
 
  void Cube::applyGravity(const GLint64& elapsedTime)
  {
-	 this->currentGravityVector.y += -0.00001 * elapsedTime;
-	 Print(elapsedTime);
+	 this->currentGravityVector.y += -0.000001 * elapsedTime;
  }
 
  void Cube::applyNextMovementVectors()

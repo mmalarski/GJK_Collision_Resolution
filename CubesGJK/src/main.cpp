@@ -54,7 +54,7 @@ int main(void)
 
     Camera camera(WINDOW_WIDTH * 0.5, WINDOW_HEIGHT * 0.5);
     Light pointLight({ 2.0f, 0.0f, 2.0f });
-    CubeManager cubeManager(10, 3.0f, 2.0f, 1.0f);
+    CubeManager cubeManager(2, 3, 1.0f);
     Shader basicShader("res/shaders/basic.shader");
     Shader lightSourceShader("res/shaders/lightSource.shader");
 
@@ -63,8 +63,8 @@ int main(void)
     GJKResolver gjkResolver;
 
     cube1
-        .setScale(2.0f)
-        .setRotation(30.0f, glm::vec3(0.0f, 1.0f, 0.0f));
+        //.setRotation(30.0f, glm::vec3(0.0f, 1.0f, 0.0f))
+        .setScale(2.0f);
 
     /* Loop until the user closes the window */
 
@@ -102,8 +102,8 @@ int main(void)
                 cube2.applyNextMovementVectors();
             }
 
-            cubeManager;
-                //.resolveCollisions((GLint64)gameLoop.elapsedTime);
+            cubeManager
+                .resolveCollisions((GLint64)gameLoop.elapsedTime);
 
             gameLoop.deltaTime -= gameLoop.SECONDS_PER_FRAME;
         }
@@ -118,6 +118,9 @@ int main(void)
 
         basicShader
             .use()
+            .setUniform("view", Shader::getViewMatrix())
+            .setUniform("projection", Shader::getProjectionMatrix())
+            .setUniform("pointLightPosition", Shader::getPointLightPosition())
             .setUniform("u_Color", cube1.getColor())
             .setUniform("model", cube1.getModelMatrix());
         cube1.render();
@@ -180,7 +183,8 @@ void processInput(GLFWwindow* window, Camera& camera, Light& directionalLight, C
         cube.setNextMovementVector({ 0.0f, 0.0f, -0.001f });
 
     if (glfwGetKey(window, GLFW_KEY_J) == GLFW_PRESS)
-        cubeManager.setCubesForceVector(glm::vec3(0.0f, 0.05f, 0.0f));
+        //cubeManager.setCubesForceVector(glm::vec3(0.0f, 0.05f, 0.0f));
+        cubeManager.launchCubes();
 
     GLdouble mousePositionX, mousePositionY;
     glfwGetCursorPos(window, &mousePositionX, &mousePositionY);

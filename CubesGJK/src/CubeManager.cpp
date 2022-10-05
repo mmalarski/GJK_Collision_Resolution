@@ -20,6 +20,24 @@ CubeManager::CubeManager(const GLuint& cubeNumber, const GLfloat& rangeOnXAxis, 
 	}
 }
 
+CubeManager::CubeManager(const GLuint& rowsNumber, const GLuint& columnsNumber, const GLfloat& height)
+{
+	for (GLuint i = 0; i < rowsNumber; i++)
+	{
+		for (GLuint j = 0; j < columnsNumber; j++)
+		{
+			Cube* cube = new Cube({ 2*i, height, 2*j });
+			cube->setColor({ 0.98f, 0.72f, 0.01f });
+			this->addCube(cube);
+		}
+	}
+
+	for (Cube* cube : this->cubes)
+	{
+		cube->moveWithVector(glm::vec3(rowsNumber * -0.5f, 0.0f, columnsNumber * -0.5f));
+	}
+}
+
 CubeManager& CubeManager::addCube(Cube* cube)
 {
 	this->cubes.push_back(cube);
@@ -82,7 +100,21 @@ CubeManager& CubeManager::setCubesForceVector(const glm::vec3& vector)
 	return *this;
 }
 
-CubeManager& CubeManager::moveCubes(const GLint64& elapsedTime)
+CubeManager& CubeManager::launchCubes()
+{
+	std::random_device r;
+	std::default_random_engine engine(r());
+	std::uniform_real_distribution<GLfloat> uniform_distX(-0.01f, 0.01f);
+	std::uniform_real_distribution<GLfloat> uniform_distY(0.0f, 0.06f);
+	std::uniform_real_distribution<GLfloat> uniform_distZ(-0.01f, 0.01f);
+	for (Cube* cube : this->cubes)
+	{
+		cube->setForceVector({uniform_distX(engine), uniform_distY(engine), uniform_distZ(engine) });
+	}
+	return *this;
+}
+
+CubeManager& CubeManager::applyCubesNextMovementVectors(const GLint64& elapsedTime)
 {
 	for (Cube* cube : this->cubes)
 	{
@@ -111,7 +143,7 @@ CubeManager& CubeManager::resolveCollisions(const GLint64& elapsedTime)
 			{
 				if (this->gjkResolver.areCubesNotColliding(cube1->simulateNextPosition(), cube2->simulateNextPosition()))
 				{
-					this->moveCubes(elapsedTime);
+					this->applyCubesNextMovementVectors(elapsedTime);
 				}
 			}
 		}
