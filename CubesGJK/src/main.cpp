@@ -1,5 +1,4 @@
 #include "Camera.h"
-#include "CubeManager.h"
 #include <GL/glew.h>
 #include <GLFW/glfw3.h>
 #include <iostream>
@@ -9,7 +8,7 @@
 #define WINDOW_WIDTH    1020
 #define WINDOW_HEIGHT   860
 
-void processInput(GLFWwindow* window, Camera& camera, Light& directionalLight);
+void processInput(GLFWwindow* window, Camera& camera, Light& directionalLight, Cube& cube);
 
 int main(void)
 {
@@ -45,14 +44,13 @@ int main(void)
     Camera camera(WINDOW_WIDTH * 0.5, WINDOW_HEIGHT * 0.5);
     Light directionalLightPosition({ 2.0f, 0.0f, 2.0f });
     Cube cube({ 0.0f, 3.0f, 0.0f });
-    CubeManager cubeManager(10, 3.0f, 2.0f, 1.0f);
     Shader basicShader("res/shaders/basic.shader");
     Shader lightSourceShader("res/shaders/lightSource.shader");
 
     /* Loop until the user closes the window */
     while (!glfwWindowShouldClose(window))
     {
-        processInput(window, camera, directionalLightPosition);
+        processInput(window, camera, directionalLightPosition, cube);
 
         /* Render here */
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
@@ -68,10 +66,9 @@ int main(void)
             .setUniform("directionalLight", directionalLightPosition.getPosition());
         
         cube.render();
-
-        cubeManager.render(basicShader);
-
         directionalLightPosition.render(lightSourceShader);
+
+        PrintVector(cube.getPosition());
 
         /* Swap front and back buffers */
         glfwSwapBuffers(window);
@@ -84,7 +81,7 @@ int main(void)
     return 0;
 }
 
-void processInput(GLFWwindow* window, Camera& camera, Light& directionalLight)
+void processInput(GLFWwindow* window, Camera& camera, Light& directionalLight, Cube& cube)
 {
     if (glfwGetKey(window, GLFW_KEY_ESCAPE) == GLFW_PRESS)
         glfwSetWindowShouldClose(window, true);
@@ -114,6 +111,15 @@ void processInput(GLFWwindow* window, Camera& camera, Light& directionalLight)
         directionalLight.move({ 0.0f, 0.01f, 0.0f });
     if (glfwGetKey(window, GLFW_KEY_R) == GLFW_PRESS)
         directionalLight.move({ 0.0f, -0.01f, 0.0f });
+
+    if (glfwGetKey(window, GLFW_KEY_L) == GLFW_PRESS)
+        cube.moveWithVector(glm::vec3({0.0f, 0.0f, -0.01f}));
+    if (glfwGetKey(window, GLFW_KEY_PERIOD) == GLFW_PRESS)
+        cube.moveWithVector(glm::vec3({ 0.0f, 0.0f, 0.01f }));
+    if (glfwGetKey(window, GLFW_KEY_COMMA) == GLFW_PRESS)
+        cube.moveWithVector(glm::vec3({ -0.01f, 0.0f, 0.0f }));
+    if (glfwGetKey(window, GLFW_KEY_SLASH) == GLFW_PRESS)
+        cube.moveWithVector(glm::vec3({ 0.01f, 0.0f, 0.0f }));
 
     GLdouble mousePositionX, mousePositionY;
     glfwGetCursorPos(window, &mousePositionX, &mousePositionY);
