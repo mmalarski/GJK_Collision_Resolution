@@ -44,18 +44,28 @@ void Cube::render() const {
 	return this->VBO;
 }
 
- const std::vector<glm::vec3> Cube::getVertices() const
+ const std::vector<glm::vec3> Cube::getRawVertices() const
  {
 	std::vector<glm::vec3> vertices;
-	vertices.push_back(glm::vec3(this->modelMatrix[0][0], this->modelMatrix[0][1], this->modelMatrix[0][2]));
-	vertices.push_back(glm::vec3(this->modelMatrix[1][0], this->modelMatrix[1][1], this->modelMatrix[1][2]));
-	vertices.push_back(glm::vec3(this->modelMatrix[2][0], this->modelMatrix[2][1], this->modelMatrix[2][2]));
-	vertices.push_back(glm::vec3(this->modelMatrix[3][0], this->modelMatrix[3][1], this->modelMatrix[3][2]));
-	vertices.push_back(glm::vec3(this->modelMatrix[20][0], this->modelMatrix[20][1], this->modelMatrix[20][2]));
-	vertices.push_back(glm::vec3(this->modelMatrix[21][0], this->modelMatrix[21][1], this->modelMatrix[21][2]));
-	vertices.push_back(glm::vec3(this->modelMatrix[22][0], this->modelMatrix[22][1], this->modelMatrix[22][2]));
-	vertices.push_back(glm::vec3(this->modelMatrix[23][0], this->modelMatrix[23][1], this->modelMatrix[23][2]));
+	vertices.push_back(glm::vec3(this->vertices[0],  this->vertices[1],  this->vertices[2]));				//A
+	vertices.push_back(glm::vec3(this->vertices[6],  this->vertices[7],  this->vertices[8]));				//D
+	vertices.push_back(glm::vec3(this->vertices[12],  this->vertices[13],  this->vertices[14]));			//C
+	vertices.push_back(glm::vec3(this->vertices[18],  this->vertices[19],  this->vertices[20]));			//B
+	vertices.push_back(glm::vec3(this->vertices[120], this->vertices[121], this->vertices[122]));			//H
+	vertices.push_back(glm::vec3(this->vertices[126], this->vertices[127], this->vertices[128]));			//E
+	vertices.push_back(glm::vec3(this->vertices[132], this->vertices[133], this->vertices[134]));			//F
+	vertices.push_back(glm::vec3(this->vertices[138], this->vertices[139], this->vertices[140]));			//G
 	return vertices;
+ }
+
+ const std::vector<glm::vec3> Cube::getTranslatedVertices() const
+ {
+	 std::vector<glm::vec3> vertices;
+	 for (glm::vec3 vertex : this->getRawVertices())
+	 {
+		 vertices.push_back(glm::vec4(vertex, 1.0f) * glm::mat3(this->modelMatrix));
+	 }
+	 return vertices;
  }
 
  const glm::vec4 Cube::getColor() const

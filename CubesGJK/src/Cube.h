@@ -10,7 +10,7 @@
 
 #define CUBE_VERTICES	8
 #define CUBE_INDICES	36
-#define VERTEX_COMPONENTS 3
+#define VERTEX_COMPONENTS 3 //x, y, z
 #define VERTICES_AND_NORMALS 2
 #define NORMALS_PER_VERTEX 3
 
@@ -22,7 +22,8 @@ public:
 	void render() const;
 	const GLuint getVAO() const;
 	const GLuint getVBO() const;
-	const std::vector<glm::vec3> getVertices() const;
+	const std::vector<glm::vec3> getRawVertices() const;
+	const std::vector<glm::vec3> getTranslatedVertices() const;
 	const glm::vec4 getColor() const;
 	const glm::mat4 getModelMatrix() const;
 	const glm::vec3 getPosition() const;
