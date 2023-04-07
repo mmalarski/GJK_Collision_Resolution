@@ -4,6 +4,7 @@
 #include "GJKCollisionChecker.h"
 #include <iostream>
 #include "Light.h"
+#include "Line.h"
 #include "Shader.h"
 
 #define WINDOW_WIDTH    1020
@@ -11,7 +12,7 @@
 
 void processInput(GLFWwindow* window, Camera& camera, Light& directionalLight, Cube& cube);
 void update(Cube& cube, Cube& cube2, Light& pointLight, GJKCollisionChecker& gjk);
-void render(GLFWwindow* window, Camera& camera, Shader& basicShader, Shader& lightSourceShader, Cube& cube, Cube& cube2, Light& pointLight);
+void render(GLFWwindow* window, Camera& camera, Shader& basicShader, Shader& lightSourceShader, Shader& lineShader, Cube& cube, Cube& cube2, Light& pointLight, GJKCollisionChecker& gjk);
 int main(void)
 {
     GLFWwindow* window;
@@ -49,6 +50,7 @@ int main(void)
     Cube cube2({ 0.6f, 0.0f, 0.0f });
     Shader basicShader("res/shaders/basic.shader");
     Shader lightSourceShader("res/shaders/lightSource.shader");
+    Shader lineShader("res/shaders/line.shader");
     GJKCollisionChecker gjk;
 
     /* Loop until the user closes the window */
@@ -71,10 +73,12 @@ int main(void)
             window, 
             camera, 
             basicShader, 
-            lightSourceShader, 
+            lightSourceShader,
+            lineShader,
             cube, 
             cube2, 
-            pointLight);
+            pointLight,
+            gjk);
     }
 
     glfwTerminate();
@@ -132,12 +136,12 @@ void processInput(GLFWwindow* window, Camera& camera, Light& pointLight, Cube& c
 
 void update(Cube& cube, Cube& cube2, Light& pointLight, GJKCollisionChecker& gjk)
 {
-    pointLight.setPosition(gjk.findFurthestPointOnDirection(cube, cube2.getPosition() - cube.getPosition()));
+    pointLight.setPosition(gjk.findFurthestPointOnDirection(cube, glm::vec3(1.0f, 2.0f, 3.0f)));
     cube.resolveMovement();
     pointLight.resolveMovement();
 }
 
-void render(GLFWwindow* window, Camera& camera, Shader& basicShader, Shader& lightSourceShader, Cube& cube, Cube& cube2, Light& pointLight)
+void render(GLFWwindow* window, Camera& camera, Shader& basicShader, Shader& lightSourceShader, Shader& lineShader, Cube& cube, Cube& cube2, Light& pointLight, GJKCollisionChecker& gjk)
 {
     /* Render here */
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
@@ -154,6 +158,14 @@ void render(GLFWwindow* window, Camera& camera, Shader& basicShader, Shader& lig
 
     cube.render();
     pointLight.render(lightSourceShader);
+
+    lineShader
+        .use()
+        .setUniform("model", glm::mat4(1.0f))
+        .setUniform("view", Shader::getViewMatrix())
+        .setUniform("projection", Shader::getProjectionMatrix())
+        .setUniform("u_Color", glm::vec4(1.0f, 0.0f, 0.0f, 1.0f));
+    Line::drawLine(glm::vec3(0.0f), glm::normalize(glm::vec3(1.0f, 2.0f, 3.0f)));
 
     basicShader
         .use()

@@ -19,3 +19,8 @@ glm::vec3 GJKCollisionChecker::findFurthestPointOnDirection(Cube& cube, glm::vec
 	
 	return maxPoint;
 }
+
+glm::vec3 GJKCollisionChecker::findSupportPoint(Cube& cube1, Cube& cube2, glm::vec3 direction)
+{
+	return this->findFurthestPointOnDirection(cube1, direction) - this->findFurthestPointOnDirection(cube2, -direction);
+}
