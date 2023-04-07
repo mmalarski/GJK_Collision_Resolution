@@ -125,7 +125,7 @@ void processInput(GLFWwindow* window, Camera& camera, Light& pointLight, Cube& c
 void update(Cube& cube, Light& pointLight)
 {
     cube.resolveMovement();
-    PrintVector(cube.getRawVertices()[7])
+    PrintVector(cube.getTranslatedVertices()[0])
     pointLight.resolveMovement();
 }
 

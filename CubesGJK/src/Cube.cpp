@@ -63,7 +63,7 @@ void Cube::render() const {
 	 std::vector<glm::vec3> vertices;
 	 for (glm::vec3 vertex : this->getRawVertices())
 	 {
-		 vertices.push_back(glm::vec4(vertex, 1.0f) * glm::mat3(this->modelMatrix));
+		 vertices.push_back(glm::vec4(vertex, 1.0f) * glm::transpose(this->modelMatrix));
 	 }
 	 return vertices;
  }
