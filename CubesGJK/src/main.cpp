@@ -43,7 +43,8 @@ int main(void)
     glfwSetCursorPos(window, WINDOW_WIDTH * 0.5, WINDOW_HEIGHT * 0.5);
     Camera camera(WINDOW_WIDTH * 0.5, WINDOW_HEIGHT * 0.5);
     Light directionalLightPosition({ 2.0f, 0.0f, 2.0f });
-    Cube cube({ 0.0f, 3.0f, 0.0f });
+    Cube cube({ -0.6f, 0.0f, 0.0f });
+    Cube cube2({ 0.6f, 0.0f, 0.0f });
     Shader basicShader("res/shaders/basic.shader");
     Shader lightSourceShader("res/shaders/lightSource.shader");
 
@@ -66,9 +67,14 @@ int main(void)
             .setUniform("directionalLight", directionalLightPosition.getPosition());
         
         cube.render();
+        
+        basicShader
+            .use()
+            .setUniform("model", cube2.getModelMatrix())
+            .setUniform("u_Color", cube2.getColor());
+        
+        cube2.render();
         directionalLightPosition.render(lightSourceShader);
-
-        PrintVector(cube.getPosition());
 
         /* Swap front and back buffers */
         glfwSwapBuffers(window);
@@ -113,13 +119,13 @@ void processInput(GLFWwindow* window, Camera& camera, Light& directionalLight, C
         directionalLight.move({ 0.0f, -0.01f, 0.0f });
 
     if (glfwGetKey(window, GLFW_KEY_L) == GLFW_PRESS)
-        cube.moveWithVector(glm::vec3({0.0f, 0.0f, -0.01f}));
+        cube.moveWithVector(glm::vec3({0.0f, 0.0f, -0.001f}));
     if (glfwGetKey(window, GLFW_KEY_PERIOD) == GLFW_PRESS)
-        cube.moveWithVector(glm::vec3({ 0.0f, 0.0f, 0.01f }));
+        cube.moveWithVector(glm::vec3({ 0.0f, 0.0f, 0.001f }));
     if (glfwGetKey(window, GLFW_KEY_COMMA) == GLFW_PRESS)
-        cube.moveWithVector(glm::vec3({ -0.01f, 0.0f, 0.0f }));
+        cube.moveWithVector(glm::vec3({ -0.001f, 0.0f, 0.0f }));
     if (glfwGetKey(window, GLFW_KEY_SLASH) == GLFW_PRESS)
-        cube.moveWithVector(glm::vec3({ 0.01f, 0.0f, 0.0f }));
+        cube.moveWithVector(glm::vec3({ 0.001f, 0.0f, 0.0f }));
 
     GLdouble mousePositionX, mousePositionY;
     glfwGetCursorPos(window, &mousePositionX, &mousePositionY);
