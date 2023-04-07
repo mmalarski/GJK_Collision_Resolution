@@ -6,6 +6,7 @@
 #include <GLFW/glfw3.h>
 #include "macros.h"
 #include <iostream>
+#include <vector>
 
 #define CUBE_VERTICES	8
 #define CUBE_INDICES	36
@@ -21,6 +22,7 @@ public:
 	void render() const;
 	const GLuint getVAO() const;
 	const GLuint getVBO() const;
+	const std::vector<glm::vec3> getVertices() const;
 	const glm::vec4 getColor() const;
 	const glm::mat4 getModelMatrix() const;
 	const glm::vec3 getPosition() const;
