@@ -23,6 +23,11 @@ void Light::moveWithVector(const glm::vec3& direction)
 	this->cube.moveWithVector(direction);
 }
 
+void Light::setPosition(glm::vec3 position)
+{
+	this->cube.setPosition(position);
+}
+
 void Light::resolveMovement()
 {
 	this->cube.resolveMovement();

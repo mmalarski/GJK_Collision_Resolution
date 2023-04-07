@@ -1,6 +1,7 @@
 #include "Camera.h"
 #include <GL/glew.h>
 #include <GLFW/glfw3.h>
+#include "GJKCollisionChecker.h"
 #include <iostream>
 #include "Light.h"
 #include "Shader.h"
@@ -9,7 +10,7 @@
 #define WINDOW_HEIGHT   860
 
 void processInput(GLFWwindow* window, Camera& camera, Light& directionalLight, Cube& cube);
-void update(Cube& cube, Light& pointLight);
+void update(Cube& cube, Cube& cube2, Light& pointLight, GJKCollisionChecker& gjk);
 void render(GLFWwindow* window, Camera& camera, Shader& basicShader, Shader& lightSourceShader, Cube& cube, Cube& cube2, Light& pointLight);
 int main(void)
 {
@@ -44,10 +45,11 @@ int main(void)
     
     Camera camera(WINDOW_WIDTH * 0.5, WINDOW_HEIGHT * 0.5);
     Light pointLight({ 0.0f, 0.0f, 1.0f });
-    Cube cube({ -0.6f, 0.0f, 0.0f });
+    Cube cube({ -0.6f, 0.1f, 0.0f });
     Cube cube2({ 0.6f, 0.0f, 0.0f });
     Shader basicShader("res/shaders/basic.shader");
     Shader lightSourceShader("res/shaders/lightSource.shader");
+    GJKCollisionChecker gjk;
 
     /* Loop until the user closes the window */
     while (!glfwWindowShouldClose(window))
@@ -60,7 +62,9 @@ int main(void)
         
         update(
             cube,
-            pointLight
+            cube2,
+            pointLight,
+            gjk
         );
         
         render(
@@ -122,10 +126,10 @@ void processInput(GLFWwindow* window, Camera& camera, Light& pointLight, Cube& c
     camera.setMousePosition(mousePositionX, mousePositionY);
 }
 
-void update(Cube& cube, Light& pointLight)
+void update(Cube& cube, Cube& cube2, Light& pointLight, GJKCollisionChecker& gjk)
 {
+    pointLight.setPosition(gjk.findFurthestPointOnDirection(cube, cube2.getPosition() - cube.getPosition()));
     cube.resolveMovement();
-    PrintVector(cube.getTranslatedVertices()[0])
     pointLight.resolveMovement();
 }
 
