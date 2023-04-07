@@ -44,6 +44,20 @@ void Cube::render() const {
 	return this->VBO;
 }
 
+ const std::vector<glm::vec3> Cube::getVertices() const
+ {
+	std::vector<glm::vec3> vertices;
+	vertices.push_back(glm::vec3(this->modelMatrix[0][0], this->modelMatrix[0][1], this->modelMatrix[0][2]));
+	vertices.push_back(glm::vec3(this->modelMatrix[1][0], this->modelMatrix[1][1], this->modelMatrix[1][2]));
+	vertices.push_back(glm::vec3(this->modelMatrix[2][0], this->modelMatrix[2][1], this->modelMatrix[2][2]));
+	vertices.push_back(glm::vec3(this->modelMatrix[3][0], this->modelMatrix[3][1], this->modelMatrix[3][2]));
+	vertices.push_back(glm::vec3(this->modelMatrix[20][0], this->modelMatrix[20][1], this->modelMatrix[20][2]));
+	vertices.push_back(glm::vec3(this->modelMatrix[21][0], this->modelMatrix[21][1], this->modelMatrix[21][2]));
+	vertices.push_back(glm::vec3(this->modelMatrix[22][0], this->modelMatrix[22][1], this->modelMatrix[22][2]));
+	vertices.push_back(glm::vec3(this->modelMatrix[23][0], this->modelMatrix[23][1], this->modelMatrix[23][2]));
+	return vertices;
+ }
+
  const glm::vec4 Cube::getColor() const
  {
 	 return this->color;
