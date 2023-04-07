@@ -42,7 +42,7 @@ int main(void)
 
     glfwSetCursorPos(window, WINDOW_WIDTH * 0.5, WINDOW_HEIGHT * 0.5);
     Camera camera(WINDOW_WIDTH * 0.5, WINDOW_HEIGHT * 0.5);
-    Light directionalLightPosition({ 2.0f, 0.0f, 2.0f });
+    Light pointLight({ 0.0f, 0.0f, 1.0f });
     Cube cube({ -0.6f, 0.0f, 0.0f });
     Cube cube2({ 0.6f, 0.0f, 0.0f });
     Shader basicShader("res/shaders/basic.shader");
@@ -51,7 +51,7 @@ int main(void)
     /* Loop until the user closes the window */
     while (!glfwWindowShouldClose(window))
     {
-        processInput(window, camera, directionalLightPosition, cube);
+        processInput(window, camera, pointLight, cube);
 
         /* Render here */
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
@@ -64,7 +64,7 @@ int main(void)
             .setUniform("view", Shader::getViewMatrix())
             .setUniform("projection", Shader::getProjectionMatrix())
             .setUniform("u_Color", cube.getColor())
-            .setUniform("directionalLight", directionalLightPosition.getPosition());
+            .setUniform("directionalLight", pointLight.getPosition());
         
         cube.render();
         
@@ -74,7 +74,7 @@ int main(void)
             .setUniform("u_Color", cube2.getColor());
         
         cube2.render();
-        directionalLightPosition.render(lightSourceShader);
+        pointLight.render(lightSourceShader);
 
         /* Swap front and back buffers */
         glfwSwapBuffers(window);
