@@ -45,7 +45,7 @@ int main(void)
     
     Camera camera(WINDOW_WIDTH * 0.5, WINDOW_HEIGHT * 0.5);
     Light pointLight({ 0.0f, 0.0f, 1.0f });
-    Cube cube({ -0.6f, 0.1f, 0.0f });
+    Cube cube({ -0.6f, 0.0f, 0.0f });
     Cube cube2({ 0.6f, 0.0f, 0.0f });
     Shader basicShader("res/shaders/basic.shader");
     Shader lightSourceShader("res/shaders/lightSource.shader");
@@ -120,6 +120,10 @@ void processInput(GLFWwindow* window, Camera& camera, Light& pointLight, Cube& c
         cube.moveWithVector(glm::vec3({ -0.001f, 0.0f, 0.0f }));
     if (glfwGetKey(window, GLFW_KEY_SLASH) == GLFW_PRESS)
         cube.moveWithVector(glm::vec3({ 0.001f, 0.0f, 0.0f }));
+    if (glfwGetKey(window, GLFW_KEY_SEMICOLON) == GLFW_PRESS)
+        cube.moveWithVector(glm::vec3({ 0.0f, 0.001f, 0.0f }));
+    if (glfwGetKey(window, GLFW_KEY_K) == GLFW_PRESS)
+        cube.moveWithVector(glm::vec3({ 0.0f, -0.001f, 0.0f }));
 
     GLdouble mousePositionX, mousePositionY;
     glfwGetCursorPos(window, &mousePositionX, &mousePositionY);
