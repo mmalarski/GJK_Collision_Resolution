@@ -5,6 +5,7 @@ Cube::Cube() :
 	modelMatrix(glm::mat4(1.0f))
 {
 	initializeBuffers();
+	this->directionToMove = glm::vec3(0.0f);
 }
 
 Cube::Cube(const glm::vec3& position) : 
@@ -13,6 +14,7 @@ Cube::Cube(const glm::vec3& position) :
 {
 	initializeBuffers();
 	this->setPosition(position);
+	this->directionToMove = glm::vec3(0.0f);
 }
 
 Cube::~Cube() {
@@ -96,15 +98,16 @@ void Cube::render() const {
 	 return *this;
  }
 
- Cube& Cube::moveWithVector(const glm::vec3& vector) 
+ Cube& Cube::moveWithVector(const glm::vec3& direction)
  {
-	 this->modelMatrix = glm::translate(this->modelMatrix, vector);
+	 this->directionToMove += direction;
 	 return *this;
  }
 
- Cube& Cube::moveWithVector(const GLfloat& x, const GLfloat& y, const GLfloat& z)
+ Cube& Cube::resolveMovement() 
  {
-	 glm::translate(this->modelMatrix, {x, y, z});
+	 this->modelMatrix = glm::translate(this->modelMatrix, this->directionToMove);
+	 this->directionToMove = glm::vec3(0.0f);
 	 return *this;
  }
 

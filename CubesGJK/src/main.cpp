@@ -9,7 +9,8 @@
 #define WINDOW_HEIGHT   860
 
 void processInput(GLFWwindow* window, Camera& camera, Light& directionalLight, Cube& cube);
-
+void update(Cube& cube, Light& pointLight);
+void render(GLFWwindow* window, Camera& camera, Shader& basicShader, Shader& lightSourceShader, Cube& cube, Cube& cube2, Light& pointLight);
 int main(void)
 {
     GLFWwindow* window;
@@ -39,8 +40,8 @@ int main(void)
     glEnable(GL_CULL_FACE);
     glEnable(GL_DEPTH_TEST);
     glClearColor(0.88f, 0.88f, 0.88f, 1.0f);
-
     glfwSetCursorPos(window, WINDOW_WIDTH * 0.5, WINDOW_HEIGHT * 0.5);
+    
     Camera camera(WINDOW_WIDTH * 0.5, WINDOW_HEIGHT * 0.5);
     Light pointLight({ 0.0f, 0.0f, 1.0f });
     Cube cube({ -0.6f, 0.0f, 0.0f });
@@ -51,43 +52,32 @@ int main(void)
     /* Loop until the user closes the window */
     while (!glfwWindowShouldClose(window))
     {
-        processInput(window, camera, pointLight, cube);
-
-        /* Render here */
-        glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-
-        Shader::setViewAndProjection(camera.getViewMatrix(), glm::perspective(glm::radians(camera.getZoom()), (GLfloat)WINDOW_WIDTH / (GLfloat)WINDOW_HEIGHT, 0.01f, 100.0f));
-
-        basicShader
-            .use()
-            .setUniform("model", cube.getModelMatrix())
-            .setUniform("view", Shader::getViewMatrix())
-            .setUniform("projection", Shader::getProjectionMatrix())
-            .setUniform("u_Color", cube.getColor())
-            .setUniform("directionalLight", pointLight.getPosition());
+        processInput(
+            window, 
+            camera, 
+            pointLight, 
+            cube);
         
-        cube.render();
+        update(
+            cube,
+            pointLight
+        );
         
-        basicShader
-            .use()
-            .setUniform("model", cube2.getModelMatrix())
-            .setUniform("u_Color", cube2.getColor());
-        
-        cube2.render();
-        pointLight.render(lightSourceShader);
-
-        /* Swap front and back buffers */
-        glfwSwapBuffers(window);
-
-        /* Poll for and process events */
-        glfwPollEvents();
+        render(
+            window, 
+            camera, 
+            basicShader, 
+            lightSourceShader, 
+            cube, 
+            cube2, 
+            pointLight);
     }
 
     glfwTerminate();
     return 0;
 }
 
-void processInput(GLFWwindow* window, Camera& camera, Light& directionalLight, Cube& cube)
+void processInput(GLFWwindow* window, Camera& camera, Light& pointLight, Cube& cube)
 {
     if (glfwGetKey(window, GLFW_KEY_ESCAPE) == GLFW_PRESS)
         glfwSetWindowShouldClose(window, true);
@@ -106,17 +96,17 @@ void processInput(GLFWwindow* window, Camera& camera, Light& directionalLight, C
         camera.processKeyboard(DOWN);
 
     if (glfwGetKey(window, GLFW_KEY_T) == GLFW_PRESS)
-        directionalLight.move({ 0.0f, 0.0f, -0.01f });
+        pointLight.moveWithVector({ 0.0f, 0.0f, -0.01f });
     if (glfwGetKey(window, GLFW_KEY_G) == GLFW_PRESS)
-        directionalLight.move({ 0.0f, 0.0f, 0.01f });
+        pointLight.moveWithVector({ 0.0f, 0.0f, 0.01f });
     if (glfwGetKey(window, GLFW_KEY_F) == GLFW_PRESS)
-        directionalLight.move({ -0.01f, 0.0f, 0.0f });
+        pointLight.moveWithVector({ -0.01f, 0.0f, 0.0f });
     if (glfwGetKey(window, GLFW_KEY_H) == GLFW_PRESS)
-        directionalLight.move({ 0.01f, 0.0f, 0.0f });
+        pointLight.moveWithVector({ 0.01f, 0.0f, 0.0f });
     if (glfwGetKey(window, GLFW_KEY_Y) == GLFW_PRESS)
-        directionalLight.move({ 0.0f, 0.01f, 0.0f });
+        pointLight.moveWithVector({ 0.0f, 0.01f, 0.0f });
     if (glfwGetKey(window, GLFW_KEY_R) == GLFW_PRESS)
-        directionalLight.move({ 0.0f, -0.01f, 0.0f });
+        pointLight.moveWithVector({ 0.0f, -0.01f, 0.0f });
 
     if (glfwGetKey(window, GLFW_KEY_L) == GLFW_PRESS)
         cube.moveWithVector(glm::vec3({0.0f, 0.0f, -0.001f}));
@@ -130,4 +120,42 @@ void processInput(GLFWwindow* window, Camera& camera, Light& directionalLight, C
     GLdouble mousePositionX, mousePositionY;
     glfwGetCursorPos(window, &mousePositionX, &mousePositionY);
     camera.setMousePosition(mousePositionX, mousePositionY);
+}
+
+void update(Cube& cube, Light& pointLight)
+{
+    cube.resolveMovement();
+    pointLight.resolveMovement();
+}
+
+void render(GLFWwindow* window, Camera& camera, Shader& basicShader, Shader& lightSourceShader, Cube& cube, Cube& cube2, Light& pointLight)
+{
+    /* Render here */
+    glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+
+    Shader::setViewAndProjection(camera.getViewMatrix(), glm::perspective(glm::radians(camera.getZoom()), (GLfloat)WINDOW_WIDTH / (GLfloat)WINDOW_HEIGHT, 0.01f, 100.0f));
+
+    basicShader
+        .use()
+        .setUniform("model", cube.getModelMatrix())
+        .setUniform("view", Shader::getViewMatrix())
+        .setUniform("projection", Shader::getProjectionMatrix())
+        .setUniform("u_Color", cube.getColor())
+        .setUniform("directionalLight", pointLight.getPosition());
+
+    cube.render();
+    pointLight.render(lightSourceShader);
+
+    basicShader
+        .use()
+        .setUniform("model", cube2.getModelMatrix())
+        .setUniform("u_Color", cube2.getColor());
+
+    cube2.render();
+
+    /* Swap front and back buffers */
+    glfwSwapBuffers(window);
+
+    /* Poll for and process events */
+    glfwPollEvents();
 }

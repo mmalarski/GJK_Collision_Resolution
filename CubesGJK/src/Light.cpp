@@ -18,9 +18,14 @@ void Light::render(Shader& shader) const
 	this->cube.render();
 }
 
-void Light::move(const glm::vec3& direction)
+void Light::moveWithVector(const glm::vec3& direction)
 {
 	this->cube.moveWithVector(direction);
+}
+
+void Light::resolveMovement()
+{
+	this->cube.resolveMovement();
 }
 
 const glm::vec3 Light::getPosition() const

@@ -29,8 +29,8 @@ public:
 	Cube& setPosition(const glm::vec3& position);
 	Cube& setPosition(const GLfloat& x, const GLfloat& y, const GLfloat& z);
 	Cube& setScale(const GLfloat& scale);
-	Cube& moveWithVector(const glm::vec3& vector);
-	Cube& moveWithVector(const GLfloat& x, const GLfloat& y, const GLfloat& z);
+	Cube& moveWithVector(const glm::vec3& direction);
+	Cube& resolveMovement();
 
 private:
 	GLuint VBO = 0, VAO = 0, EBO = 0;
@@ -75,6 +75,7 @@ private:
 	};
 	glm::vec4 color;
 	glm::mat4 modelMatrix;
+	glm::vec3 directionToMove;
 
 	void initializeBuffers();
 };
