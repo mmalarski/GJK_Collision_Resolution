@@ -16,10 +16,9 @@ void processInput(
     GLFWwindow* window, 
     Camera& camera, 
     Light& directionalLight, 
-    Cube& cube);
+    CubeManager& cubeManager);
 void update(
-    Cube& cube, 
-    Cube& cube2, 
+    CubeManager& cubeManager,
     Light& pointLight,
     Light& pointLight1,
     GJKCollisionChecker& gjk, 
@@ -30,7 +29,7 @@ void render(
     Shader& basicShader, 
     Shader& lightSourceShader, 
     Shader& lineShader, 
-    Cube& cube, Cube& cube2,
+    CubeManager& cubeManager,
     LightManager& lightManager,
     GJKCollisionChecker& gjk, 
     Line& line);
@@ -67,20 +66,25 @@ int main(void)
     glfwSetCursorPos(window, WINDOW_WIDTH * 0.5, WINDOW_HEIGHT * 0.5);
     
     Camera camera(WINDOW_WIDTH * 0.5, WINDOW_HEIGHT * 0.5);
+    
     Cube cube({ -0.6f, 0.0f, 0.0f });
     Cube cube2({ 0.6f, 0.0f, 0.0f });
     CubeManager cubeManager;
 	cubeManager.addCube(&cube);
 	cubeManager.addCube(&cube2);
+    
     Light pointLight({ 0.0f, 0.0f, 1.0f });
     Light pointLight1({ 0.0f, 0.0f, 2.0f });
 	LightManager lightManager;
 	lightManager.addLight(&pointLight);
 	lightManager.addLight(&pointLight1);
+    
     Line line(glm::vec3(0.0f), glm::normalize(glm::vec3(1.0f, 0.0f, 0.0f)));
+    
     Shader basicShader("res/shaders/basic.shader");
     Shader lightSourceShader("res/shaders/lightSource.shader");
     Shader lineShader("res/shaders/line.shader");
+    
     GJKCollisionChecker gjk;
 
     /* Loop until the user closes the window */
@@ -90,11 +94,10 @@ int main(void)
             window, 
             camera, 
             pointLight, 
-            cube);
+            cubeManager);
         
         update(
-            cube,
-            cube2,
+            cubeManager,
             pointLight,
             pointLight1,
             gjk,
@@ -106,8 +109,7 @@ int main(void)
             basicShader, 
             lightSourceShader,
             lineShader,
-            cube, 
-            cube2, 
+            cubeManager, 
 			lightManager,
             gjk,
             line);
@@ -117,7 +119,7 @@ int main(void)
     return 0;
 }
 
-void processInput(GLFWwindow* window, Camera& camera, Light& pointLight, Cube& cube)
+void processInput(GLFWwindow* window, Camera& camera, Light& pointLight, CubeManager& cubeManager)
 {
     if (glfwGetKey(window, GLFW_KEY_ESCAPE) == GLFW_PRESS)
         glfwSetWindowShouldClose(window, true);
@@ -149,57 +151,47 @@ void processInput(GLFWwindow* window, Camera& camera, Light& pointLight, Cube& c
         pointLight.moveWithVector({ 0.0f, -0.01f, 0.0f });
 
     if (glfwGetKey(window, GLFW_KEY_L) == GLFW_PRESS)
-        cube.moveWithVector(glm::vec3({0.0f, 0.0f, -0.001f}));
+        cubeManager.getCubes()[0]->moveWithVector(glm::vec3({0.0f, 0.0f, -0.001f}));
     if (glfwGetKey(window, GLFW_KEY_PERIOD) == GLFW_PRESS)
-        cube.moveWithVector(glm::vec3({ 0.0f, 0.0f, 0.001f }));
+        cubeManager.getCubes()[0]->moveWithVector(glm::vec3({ 0.0f, 0.0f, 0.001f }));
     if (glfwGetKey(window, GLFW_KEY_COMMA) == GLFW_PRESS)
-        cube.moveWithVector(glm::vec3({ -0.001f, 0.0f, 0.0f }));
+        cubeManager.getCubes()[0]->moveWithVector(glm::vec3({ -0.001f, 0.0f, 0.0f }));
     if (glfwGetKey(window, GLFW_KEY_SLASH) == GLFW_PRESS)
-        cube.moveWithVector(glm::vec3({ 0.001f, 0.0f, 0.0f }));
+        cubeManager.getCubes()[0]->moveWithVector(glm::vec3({ 0.001f, 0.0f, 0.0f }));
     if (glfwGetKey(window, GLFW_KEY_SEMICOLON) == GLFW_PRESS)
-        cube.moveWithVector(glm::vec3({ 0.0f, 0.001f, 0.0f }));
+        cubeManager.getCubes()[0]->moveWithVector(glm::vec3({ 0.0f, 0.001f, 0.0f }));
     if (glfwGetKey(window, GLFW_KEY_K) == GLFW_PRESS)
-        cube.moveWithVector(glm::vec3({ 0.0f, -0.001f, 0.0f }));
+        cubeManager.getCubes()[0]->moveWithVector(glm::vec3({ 0.0f, -0.001f, 0.0f }));
 
     GLdouble mousePositionX, mousePositionY;
     glfwGetCursorPos(window, &mousePositionX, &mousePositionY);
     camera.setMousePosition(mousePositionX, mousePositionY);
 }
 
-void update(Cube& cube, Cube& cube2, Light& pointLight, Light& pointLight1, GJKCollisionChecker& gjk, Line& line)
+void update(CubeManager& cubeManager, Light& pointLight, Light& pointLight1, GJKCollisionChecker& gjk, Line& line)
 {
-    pointLight.setPosition(gjk.findFurthestPointOnDirection(cube, glm::vec3(1.0f, 2.0f, 3.0f)));
-    pointLight1.setPosition(gjk.findFurthestPointOnDirection(cube2, -glm::vec3(1.0f, 2.0f, 3.0f)));
+    pointLight.setPosition(
+        gjk.findFurthestPointOnDirection(
+			*cubeManager.getCubes()[0],
+            glm::vec3(1.0f, 2.0f, 3.0f)));
+    pointLight1.setPosition(
+        gjk.findFurthestPointOnDirection(
+			*cubeManager.getCubes()[1],
+            -glm::vec3(1.0f, 2.0f, 3.0f)));
     line.setA(glm::vec3(0.0f));
     line.setB(pointLight.getPosition());
     
-    cube.resolveMovement();
-    pointLight.resolveMovement();
+    cubeManager.resolveMovement();
 }
 
-void render(GLFWwindow* window, Camera& camera, Shader& basicShader, Shader& lightSourceShader, Shader& lineShader, Cube& cube, Cube& cube2, LightManager& lightManager, GJKCollisionChecker& gjk, Line& line)
+void render(GLFWwindow* window, Camera& camera, Shader& basicShader, Shader& lightSourceShader, Shader& lineShader, CubeManager& cubeManager, LightManager& lightManager, GJKCollisionChecker& gjk, Line& line)
 {
     /* Render here */
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
     Shader::setViewAndProjection(camera.getViewMatrix(), glm::perspective(glm::radians(camera.getZoom()), (GLfloat)WINDOW_WIDTH / (GLfloat)WINDOW_HEIGHT, 0.01f, 100.0f));
 
-    basicShader
-        .use()
-        .setUniform("model", cube.getModelMatrix())
-        .setUniform("view", Shader::getViewMatrix())
-        .setUniform("projection", Shader::getProjectionMatrix())
-        .setUniform("u_Color", cube.getColor())
-        .setUniform("directionalLight", lightManager.getLights()[0]->getPosition());
-
-    cube.render();
-
-    basicShader
-        .setUniform("model", cube2.getModelMatrix())
-        .setUniform("u_Color", cube2.getColor());
-
-    cube2.render();
-    
+    cubeManager.render(basicShader);
     lightManager.render(lightSourceShader);
 
     lineShader

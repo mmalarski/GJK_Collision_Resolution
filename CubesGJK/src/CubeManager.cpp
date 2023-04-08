@@ -35,6 +35,14 @@ const std::vector<Cube*>& CubeManager::getCubes() const
 	return this->cubes;
 }
 
+void CubeManager::resolveMovement()
+{
+	for (Cube* cube : this->cubes)
+	{
+		cube->resolveMovement();
+	}
+}
+
 void CubeManager::render(Shader& shader) const
 {
 	for (Cube* cube : this->cubes)

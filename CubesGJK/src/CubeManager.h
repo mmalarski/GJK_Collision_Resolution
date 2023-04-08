@@ -13,6 +13,7 @@ public:
 	CubeManager(const GLuint& cubeNumber, const GLfloat& rangeOnXAxis, const GLfloat& rangeOnZAxis, const GLfloat& height);
 	void addCube(Cube* cube);
 	const std::vector<Cube*>& getCubes() const;
+	void resolveMovement();
 	void render(Shader& shader) const;
 private:
 	std::vector<Cube*> cubes;
