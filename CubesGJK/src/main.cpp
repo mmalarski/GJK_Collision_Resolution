@@ -45,9 +45,9 @@ void processInput(
 void update(
     GLint64& deltaTime,
     CubeManager& cubeManager,
-    LightManager& lightManager,
-    GJKCollisionChecker& gjk, 
-    LineManager& lineManager);
+    LightManager& lightManager, 
+    LineManager& lineManager,
+    GJKCollisionChecker& gjk);
 void render(
     GLFWwindow* window, 
     Camera& camera, 
@@ -55,9 +55,9 @@ void render(
     Shader& lightSourceShader, 
     Shader& lineShader, 
     CubeManager& cubeManager,
-    LightManager& lightManager,
-    GJKCollisionChecker& gjk, 
-    LineManager& lineManager);
+    LightManager& lightManager, 
+    LineManager& lineManager,
+    GJKCollisionChecker& gjk);
 
 int main(void)
 {
@@ -93,8 +93,8 @@ int main(void)
     
     Camera camera(WINDOW_WIDTH * 0.5, WINDOW_HEIGHT * 0.5);
     
-    Cube cube({ -0.6f, 0.6f, 0.0f });
-    Cube cube2({ 0.6f, 0.6f, 0.0f });
+    Cube cube({ -1.0f, 0.6f, 0.0f });
+    Cube cube2({ 1.0f, 0.6f, 0.0f });
     CubeManager cubeManager;
 	cubeManager.addCube(&cube);
 	cubeManager.addCube(&cube2);
@@ -150,8 +150,8 @@ int main(void)
                 gameLoop.deltaTime,
                 cubeManager,
                 lightManager,
-                gjk,
-                lineManager);
+                lineManager,
+                gjk);
 			gameLoop.deltaTime -= gameLoop.SECONDS_PER_FRAME;
         }
         
@@ -163,8 +163,8 @@ int main(void)
             lineShader,
             cubeManager, 
 			lightManager,
-            gjk,
-            lineManager);
+            lineManager,
+            gjk);
     }
 
     glfwTerminate();
@@ -207,7 +207,7 @@ void processInput(GLFWwindow* window, Camera& camera, CubeManager& cubeManager)
     camera.setMousePosition(mousePositionX, mousePositionY);
 }
 
-void update(GLint64& deltaTime, CubeManager& cubeManager, LightManager& lightManager, GJKCollisionChecker& gjk, LineManager& lineManager)
+void update(GLint64& deltaTime, CubeManager& cubeManager, LightManager& lightManager, LineManager& lineManager, GJKCollisionChecker& gjk)
 {
     lightManager.getLights()[0]->setPosition(
         gjk.findFurthestPointOnDirection(
@@ -231,7 +231,7 @@ void update(GLint64& deltaTime, CubeManager& cubeManager, LightManager& lightMan
     cubeManager.resolveMovement();
 }
 
-void render(GLFWwindow* window, Camera& camera, Shader& basicShader, Shader& lightSourceShader, Shader& lineShader, CubeManager& cubeManager, LightManager& lightManager, GJKCollisionChecker& gjk, LineManager& lineManager)
+void render(GLFWwindow* window, Camera& camera, Shader& basicShader, Shader& lightSourceShader, Shader& lineShader, CubeManager& cubeManager, LightManager& lightManager, LineManager& lineManager, GJKCollisionChecker& gjk)
 {
     /* Render here */
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);

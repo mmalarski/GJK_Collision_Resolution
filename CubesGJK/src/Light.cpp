@@ -15,7 +15,7 @@ void Light::render(Shader& shader) const
 		.setUniform("view", Shader::getViewMatrix())
 		.setUniform("projection", Shader::getProjectionMatrix())
 		.setUniform("model", this->cube.getModelMatrix());
-	this->cube.render();
+	this->cube.render(1);
 }
 
 void Light::moveWithVector(const glm::vec3& direction)
