@@ -24,7 +24,7 @@ struct GameLoop
 
 enum Lines
 {
-    DIRECTION,
+    DIRECTION_LINE,
     XAXIS,
 	YAXIS,
 	ZAXIS,
@@ -210,15 +210,15 @@ void processInput(GLFWwindow* window, Camera& camera, CubeManager& cubeManager)
 void update(GLint64& deltaTime, CubeManager& cubeManager, LightManager& lightManager, LineManager& lineManager, GJKCollisionChecker& gjk)
 {
     lightManager[MOVING_CUBE].setPosition(
-        gjk.findFurthestPointOnDirection(cubeManager[MOVING_CUBE], lineManager[DIRECTION].getDirection()
+        gjk.findFurthestPointOnDirection(cubeManager[MOVING_CUBE], lineManager[DIRECTION_LINE].getDirection()
         )
     );
     lightManager[STATIC_CUBE].setPosition(
-        gjk.findFurthestPointOnDirection(cubeManager[STATIC_CUBE], -lineManager[DIRECTION].getDirection())
+        gjk.findFurthestPointOnDirection(cubeManager[STATIC_CUBE], -lineManager[DIRECTION_LINE].getDirection())
     );
     
-    lineManager[DIRECTION].setA(glm::vec3(0.0f));
-	lineManager[DIRECTION].setB(glm::vec3(glm::sin((float)glfwGetTime()), glm::sin((float)glfwGetTime() * 0.7f), glm::cos((float)glfwGetTime())));
+    lineManager[DIRECTION_LINE].setA(glm::vec3(0.0f));
+	lineManager[DIRECTION_LINE].setB(glm::vec3(glm::sin((float)glfwGetTime()), glm::sin((float)glfwGetTime() * 0.7f), glm::cos((float)glfwGetTime())));
     lineManager[XAXIS].setB(glm::vec3(glm::sin((float)glfwGetTime()), 0.0f, 0.0f));
     lineManager[YAXIS].setB(glm::vec3(0.0f, glm::sin((float)glfwGetTime() * 0.7f), 0.0f));
     lineManager[ZAXIS].setB(glm::vec3(0.0f, 0.0f, glm::cos((float)glfwGetTime())));
