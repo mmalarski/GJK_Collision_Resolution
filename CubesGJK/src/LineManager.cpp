@@ -5,6 +5,11 @@ LineManager::LineManager()
 	this->lines = std::vector<Line*>();
 }
 
+Line& LineManager::operator[](GLuint index)
+{
+	return *this->lines[index];
+}
+
 void LineManager::addLine(Line* line)
 {
 	this->lines.push_back(line);

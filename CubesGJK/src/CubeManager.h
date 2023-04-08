@@ -12,6 +12,7 @@ class CubeManager
 public:
 	CubeManager();
 	CubeManager(const GLuint& cubeNumber, const GLfloat& rangeOnXAxis, const GLfloat& rangeOnZAxis, const GLfloat& height);
+	Cube& operator[](GLuint index);
 	void addCube(Cube* cube);
 	const std::vector<Cube*>& getCubes() const;
 	void resolveMovement();

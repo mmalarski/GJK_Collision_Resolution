@@ -25,6 +25,12 @@ CubeManager::CubeManager(const GLuint& cubeNumber, const GLfloat& rangeOnXAxis, 
 	}
 }
 
+Cube& CubeManager::operator[](GLuint index)
+{
+	return *this->cubes[index];
+}
+
+
 void CubeManager::addCube(Cube* cube)
 {
 	this->cubes.push_back(cube);

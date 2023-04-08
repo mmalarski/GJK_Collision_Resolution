@@ -33,8 +33,8 @@ enum Lines
 
 enum Cubes
 {
-	MOVING,
-	STATIC,
+	MOVING_CUBE,
+	STATIC_CUBE,
 	NUM_CUBES
 };
 
@@ -190,17 +190,17 @@ void processInput(GLFWwindow* window, Camera& camera, CubeManager& cubeManager)
         camera.processKeyboard(DOWN);
 
     if (glfwGetKey(window, GLFW_KEY_L) == GLFW_PRESS)
-        cubeManager.getCubes()[0]->moveWithVector(glm::vec3({0.0f, 0.0f, -0.001f}));
+        cubeManager[MOVING_CUBE].moveWithVector(glm::vec3({0.0f, 0.0f, -0.001f}));
     if (glfwGetKey(window, GLFW_KEY_PERIOD) == GLFW_PRESS)
-        cubeManager.getCubes()[0]->moveWithVector(glm::vec3({ 0.0f, 0.0f, 0.001f }));
+        cubeManager[MOVING_CUBE].moveWithVector(glm::vec3({ 0.0f, 0.0f, 0.001f }));
     if (glfwGetKey(window, GLFW_KEY_COMMA) == GLFW_PRESS)
-        cubeManager.getCubes()[0]->moveWithVector(glm::vec3({ -0.001f, 0.0f, 0.0f }));
+        cubeManager[MOVING_CUBE].moveWithVector(glm::vec3({ -0.001f, 0.0f, 0.0f }));
     if (glfwGetKey(window, GLFW_KEY_SLASH) == GLFW_PRESS)
-        cubeManager.getCubes()[0]->moveWithVector(glm::vec3({ 0.001f, 0.0f, 0.0f }));
+        cubeManager[MOVING_CUBE].moveWithVector(glm::vec3({ 0.001f, 0.0f, 0.0f }));
     if (glfwGetKey(window, GLFW_KEY_SEMICOLON) == GLFW_PRESS)
-        cubeManager.getCubes()[0]->moveWithVector(glm::vec3({ 0.0f, 0.001f, 0.0f }));
+        cubeManager[MOVING_CUBE].moveWithVector(glm::vec3({ 0.0f, 0.001f, 0.0f }));
     if (glfwGetKey(window, GLFW_KEY_K) == GLFW_PRESS)
-        cubeManager.getCubes()[0]->moveWithVector(glm::vec3({ 0.0f, -0.001f, 0.0f }));
+        cubeManager[MOVING_CUBE].moveWithVector(glm::vec3({ 0.0f, -0.001f, 0.0f }));
 
     GLdouble mousePositionX, mousePositionY;
     glfwGetCursorPos(window, &mousePositionX, &mousePositionY);
@@ -209,24 +209,19 @@ void processInput(GLFWwindow* window, Camera& camera, CubeManager& cubeManager)
 
 void update(GLint64& deltaTime, CubeManager& cubeManager, LightManager& lightManager, LineManager& lineManager, GJKCollisionChecker& gjk)
 {
-    lightManager.getLights()[0]->setPosition(
-        gjk.findFurthestPointOnDirection(
-            *cubeManager.getCubes()[MOVING],
-            lineManager.getLines()[DIRECTION]->getDirection()
+    lightManager[MOVING_CUBE].setPosition(
+        gjk.findFurthestPointOnDirection(cubeManager[MOVING_CUBE], lineManager[DIRECTION].getDirection()
         )
     );
-    lightManager.getLights()[1]->setPosition(
-        gjk.findFurthestPointOnDirection(
-			*cubeManager.getCubes()[STATIC],
-            -lineManager.getLines()[DIRECTION]->getDirection()
-        )
+    lightManager[STATIC_CUBE].setPosition(
+        gjk.findFurthestPointOnDirection(cubeManager[STATIC_CUBE], -lineManager[DIRECTION].getDirection())
     );
     
-    lineManager.getLines()[DIRECTION]->setA(glm::vec3(0.0f));
-	lineManager.getLines()[DIRECTION]->setB(glm::vec3(glm::sin((float)glfwGetTime()), glm::sin((float)glfwGetTime() * 0.5f), glm::cos((float)glfwGetTime())));
-    lineManager.getLines()[XAXIS]->setB(glm::vec3(glm::sin((float)glfwGetTime()), 0.0f, 0.0f));
-    lineManager.getLines()[YAXIS]->setB(glm::vec3(0.0f, glm::sin((float)glfwGetTime() * 0.5f), 0.0f));
-    lineManager.getLines()[ZAXIS]->setB(glm::vec3(0.0f, 0.0f, glm::cos((float)glfwGetTime())));
+    lineManager[DIRECTION].setA(glm::vec3(0.0f));
+	lineManager[DIRECTION].setB(glm::vec3(glm::sin((float)glfwGetTime()), glm::sin((float)glfwGetTime() * 0.7f), glm::cos((float)glfwGetTime())));
+    lineManager[XAXIS].setB(glm::vec3(glm::sin((float)glfwGetTime()), 0.0f, 0.0f));
+    lineManager[YAXIS].setB(glm::vec3(0.0f, glm::sin((float)glfwGetTime() * 0.7f), 0.0f));
+    lineManager[ZAXIS].setB(glm::vec3(0.0f, 0.0f, glm::cos((float)glfwGetTime())));
     
     cubeManager.resolveMovement();
 }

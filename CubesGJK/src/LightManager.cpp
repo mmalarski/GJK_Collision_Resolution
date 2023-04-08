@@ -5,6 +5,12 @@ LightManager::LightManager()
 	this->lights = std::vector<Light*>();
 }
 
+Light& LightManager::operator[](GLuint index)
+{
+	return *this->lights[index];
+}
+
+
 void LightManager::addLight(Light* light)
 {
 	this->lights.push_back(light);
