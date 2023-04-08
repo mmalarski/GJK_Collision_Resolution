@@ -60,8 +60,8 @@ void CubeManager::render(Shader& shader, LightManager& lightManager) const
 			.setUniform("view", Shader::getViewMatrix())
 			.setUniform("projection", Shader::getProjectionMatrix())
 			.setUniform("u_Color", cube->getColor())
-			.setUniform("pointLights[0]", lightManager[0].getPosition())
-			.setUniform("pointLights[1]", lightManager[1].getPosition());
+			.setUniform("pointLights[0]", lightManager.getLights()[0]->getPosition())
+			.setUniform("pointLights[1]", lightManager.getLights()[1]->getPosition());
 		cube->render();
 		lightIndex++;
 	}

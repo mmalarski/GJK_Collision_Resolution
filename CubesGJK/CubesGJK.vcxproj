@@ -136,7 +136,6 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClCompile Include="src\Colors.cpp" />
     <ClCompile Include="src\GJKCollisionChecker.cpp" />
     <ClCompile Include="src\Light.cpp" />
     <ClCompile Include="src\CubeManager.cpp" />
@@ -149,7 +148,6 @@
     <ClCompile Include="src\Line.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="src\Colors.h" />
     <ClInclude Include="src\Light.h" />
     <ClInclude Include="src\LightManager.h" />
     <ClInclude Include="src\GJKCollisionChecker.h" />
