@@ -24,3 +24,8 @@ glm::vec3 GJKCollisionChecker::findSupportPoint(Cube& cube1, Cube& cube2, glm::v
 {
 	return this->findFurthestPointOnDirection(cube1, direction) - this->findFurthestPointOnDirection(cube2, -direction);
 }
+
+void GJKCollisionChecker::renderSimplex(Shader& shader)
+{
+	this->points.render(shader);
+}

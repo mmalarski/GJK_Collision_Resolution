@@ -7,7 +7,6 @@
 #include "Light.h"
 #include "LightManager.h"
 #include "Line.h"
-#include "LineManager.h"
 #include "Shader.h"
 
 #define WINDOW_WIDTH    1020
@@ -22,14 +21,32 @@ struct GameLoop
     const GLint64 SECONDS_PER_FRAME = 1 / 60;
 };
 
-enum Lines
+struct Colors
 {
-    DIRECTION_LINE,
-    XAXIS,
-	YAXIS,
-	ZAXIS,
-	NUM_LINES
+	static glm::vec3 Red        ;   
+	static glm::vec3 Green      ; 
+	static glm::vec3 Blue       ;  
+	static glm::vec3 Yellow     ;
+	static glm::vec3 Cyan       ;  
+	static glm::vec3 Magenta    ;
+	static glm::vec3 White      ; 
+	static glm::vec3 Black      ; 
+	static glm::vec3 Orange     ;
+	static glm::vec3 Purple     ;
+	static glm::vec3 Brown      ; 
 };
+
+glm::vec3 Colors::Red      =   { 1.0f, 0.0f, 0.0f };
+glm::vec3 Colors::Green    =   { 0.0f, 1.0f, 0.0f };
+glm::vec3 Colors::Blue     =   { 0.0f, 0.0f, 1.0f };
+glm::vec3 Colors::Yellow   =   { 1.0f, 1.0f, 0.0f };
+glm::vec3 Colors::Cyan     =   { 0.0f, 1.0f, 1.0f };
+glm::vec3 Colors::Magenta  =   { 1.0f, 0.0f, 1.0f };
+glm::vec3 Colors::White    =   { 1.0f, 1.0f, 1.0f };
+glm::vec3 Colors::Black    =   { 0.0f, 0.0f, 0.0f };
+glm::vec3 Colors::Orange   =   { 1.0f, 0.5f, 0.0f };
+glm::vec3 Colors::Purple   =   { 0.5f, 0.0f, 1.0f };
+glm::vec3 Colors::Brown    =   { 0.5f, 0.25f, 0.0f };
 
 enum Cubes
 {
@@ -46,7 +63,6 @@ void update(
     GLint64& deltaTime,
     CubeManager& cubeManager,
     LightManager& lightManager, 
-    LineManager& lineManager,
     GJKCollisionChecker& gjk);
 void render(
     GLFWwindow* window, 
@@ -56,7 +72,6 @@ void render(
     Shader& lineShader, 
     CubeManager& cubeManager,
     LightManager& lightManager, 
-    LineManager& lineManager,
     GJKCollisionChecker& gjk);
 
 int main(void)
@@ -104,22 +119,6 @@ int main(void)
 	LightManager lightManager;
 	lightManager.addLight(&pointLight);
 	lightManager.addLight(&pointLight1);
-    
-    Line direction(glm::vec3(0.0f), glm::normalize(glm::vec3(1.0f, 0.0f, 0.0f)));
-    Line xAxis(glm::vec3(0.0f), glm::vec3(1.0f, 0.0f, 0.0f));
-    xAxis.setAColor(glm::vec3(0.0f));
-	xAxis.setBColor(glm::vec3(1.0f, 0.0f, 0.0f));
-    Line yAxis(glm::vec3(0.0f), glm::vec3(0.0f, 1.0f, 0.0f));
-	yAxis.setAColor(glm::vec3(0.0f));
-	yAxis.setBColor(glm::vec3(0.0f, 1.0f, 0.0f));
-    Line zAxis(glm::vec3(0.0f), glm::vec3(0.0f, 0.0f, 1.0f));
-	zAxis.setAColor(glm::vec3(0.0f));
-	zAxis.setBColor(glm::vec3(0.0f, 0.0f, 1.0f));
-    LineManager lineManager;
-	lineManager.addLine(&direction);
-	lineManager.addLine(&xAxis);
-	lineManager.addLine(&yAxis);
-	lineManager.addLine(&zAxis);
 
     Shader basicShader("res/shaders/basic.shader");
     Shader lightSourceShader("res/shaders/lightSource.shader");
@@ -144,14 +143,15 @@ int main(void)
             processInput(
                 window, 
                 camera, 
-                cubeManager);
+                cubeManager
+            );
         
             update(
                 gameLoop.deltaTime,
                 cubeManager,
                 lightManager,
-                lineManager,
-                gjk);
+                gjk
+            );
 			gameLoop.deltaTime -= gameLoop.SECONDS_PER_FRAME;
         }
         
@@ -163,8 +163,8 @@ int main(void)
             lineShader,
             cubeManager, 
 			lightManager,
-            lineManager,
-            gjk);
+            gjk
+        );
     }
 
     glfwTerminate();
@@ -202,40 +202,46 @@ void processInput(GLFWwindow* window, Camera& camera, CubeManager& cubeManager)
     if (glfwGetKey(window, GLFW_KEY_K) == GLFW_PRESS)
         cubeManager[MOVING_CUBE].moveWithVector(glm::vec3({ 0.0f, -0.001f, 0.0f }));
 
+    //if ctrl pressed set timescale to zero
+    if(glfwGetKey(window, GLFW_KEY_LEFT_CONTROL) == GLFW_PRESS)
+		glfwSetTime(0.0);
+
     GLdouble mousePositionX, mousePositionY;
     glfwGetCursorPos(window, &mousePositionX, &mousePositionY);
     camera.setMousePosition(mousePositionX, mousePositionY);
 }
 
-void update(GLint64& deltaTime, CubeManager& cubeManager, LightManager& lightManager, LineManager& lineManager, GJKCollisionChecker& gjk)
+void update(GLint64& deltaTime, CubeManager& cubeManager, LightManager& lightManager, GJKCollisionChecker& gjk)
 {
+	glm::vec3 direction = cubeManager[STATIC_CUBE].getPosition() - cubeManager[MOVING_CUBE].getPosition();
     lightManager[MOVING_CUBE].setPosition(
-        gjk.findFurthestPointOnDirection(cubeManager[MOVING_CUBE], lineManager[DIRECTION_LINE].getDirection()
-        )
+        gjk.findFurthestPointOnDirection(cubeManager[MOVING_CUBE], glm::normalize(direction))
     );
     lightManager[STATIC_CUBE].setPosition(
-        gjk.findFurthestPointOnDirection(cubeManager[STATIC_CUBE], -lineManager[DIRECTION_LINE].getDirection())
+        gjk.findFurthestPointOnDirection(cubeManager[STATIC_CUBE], -glm::normalize(direction))
     );
-    
-    lineManager[DIRECTION_LINE].setA(glm::vec3(0.0f));
-	lineManager[DIRECTION_LINE].setB(glm::vec3(glm::sin((float)glfwGetTime()), glm::sin((float)glfwGetTime() * 0.7f), glm::cos((float)glfwGetTime())));
-    lineManager[XAXIS].setB(glm::vec3(glm::sin((float)glfwGetTime()), 0.0f, 0.0f));
-    lineManager[YAXIS].setB(glm::vec3(0.0f, glm::sin((float)glfwGetTime() * 0.7f), 0.0f));
-    lineManager[ZAXIS].setB(glm::vec3(0.0f, 0.0f, glm::cos((float)glfwGetTime())));
     
     cubeManager.resolveMovement();
 }
 
-void render(GLFWwindow* window, Camera& camera, Shader& basicShader, Shader& lightSourceShader, Shader& lineShader, CubeManager& cubeManager, LightManager& lightManager, LineManager& lineManager, GJKCollisionChecker& gjk)
+void render(GLFWwindow* window, Camera& camera, Shader& basicShader, Shader& lightSourceShader, Shader& lineShader, CubeManager& cubeManager, LightManager& lightManager, GJKCollisionChecker& gjk)
 {
     /* Render here */
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-
+    
     Shader::setViewAndProjection(camera.getViewMatrix(), glm::perspective(glm::radians(camera.getZoom()), (GLfloat)WINDOW_WIDTH / (GLfloat)WINDOW_HEIGHT, 0.01f, 100.0f));
     
     cubeManager.render(basicShader, lightManager);
-    lightManager.render(lightSourceShader);
-	lineManager.render(lineShader);
+    lightManager.render(lightSourceShader);    
+    
+    //setting the direction (the same as for lights in update())
+    glm::vec3 direction = cubeManager[STATIC_CUBE].getPosition() - cubeManager[MOVING_CUBE].getPosition();
+    Line::drawLine(lineShader, glm::vec3(0.0f), Colors::White, glm::normalize(direction), Colors::Magenta);
+	glm::vec3 supportPoint = gjk.findSupportPoint(cubeManager[MOVING_CUBE], cubeManager[STATIC_CUBE], glm::normalize(direction));
+    Line::drawLine(lineShader, glm::vec3(0.0f), Colors::White, supportPoint, Colors::White);
+	Line::drawLine(lineShader, glm::vec3(0.0f), Colors::Black, glm::vec3(1.0f, 0.0f, 0.0f), Colors::Red);
+	Line::drawLine(lineShader, glm::vec3(0.0f), Colors::Black, glm::vec3(0.0f, 1.0f, 0.0f), Colors::Green);
+	Line::drawLine(lineShader, glm::vec3(0.0f), Colors::Black, glm::vec3(0.0f, 0.0f, 1.0f), Colors::Blue);
 
     /* Swap front and back buffers */
     glfwSwapBuffers(window);
