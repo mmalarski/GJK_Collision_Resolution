@@ -5,6 +5,7 @@
 #include <random>
 #include "Shader.h"
 #include <vector>
+#include "LightManager.h"
 
 class CubeManager
 {
@@ -14,7 +15,7 @@ public:
 	void addCube(Cube* cube);
 	const std::vector<Cube*>& getCubes() const;
 	void resolveMovement();
-	void render(Shader& shader) const;
+	void render(Shader& shader, LightManager& lightManager) const;
 private:
 	std::vector<Cube*> cubes;
 };

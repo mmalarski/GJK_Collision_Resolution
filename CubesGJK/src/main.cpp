@@ -22,6 +22,22 @@ struct GameLoop
     const GLint64 SECONDS_PER_FRAME = 1 / 60;
 };
 
+enum Lines
+{
+    DIRECTION,
+    XAXIS,
+	YAXIS,
+	ZAXIS,
+	NUM_LINES
+};
+
+enum Cubes
+{
+	MOVING,
+	STATIC,
+	NUM_CUBES
+};
+
 void processInput(
     GLFWwindow* window, 
     Camera& camera,
@@ -195,22 +211,22 @@ void update(GLint64& deltaTime, CubeManager& cubeManager, LightManager& lightMan
 {
     lightManager.getLights()[0]->setPosition(
         gjk.findFurthestPointOnDirection(
-            *cubeManager.getCubes()[0],
-            lineManager.getLines()[0]->getDirection()
+            *cubeManager.getCubes()[MOVING],
+            lineManager.getLines()[DIRECTION]->getDirection()
         )
     );
     lightManager.getLights()[1]->setPosition(
         gjk.findFurthestPointOnDirection(
-			*cubeManager.getCubes()[1],
-            -lineManager.getLines()[0]->getDirection()
+			*cubeManager.getCubes()[STATIC],
+            -lineManager.getLines()[DIRECTION]->getDirection()
         )
     );
     
-    lineManager.getLines()[0]->setA(glm::vec3(0.0f));
-	lineManager.getLines()[0]->setB(glm::vec3(glm::sin((float)glfwGetTime()), glm::sin((float)glfwGetTime() * 0.5f), glm::cos((float)glfwGetTime())));
-    lineManager.getLines()[1]->setB(glm::vec3(glm::sin((float)glfwGetTime()), 0.0f, 0.0f));
-    lineManager.getLines()[2]->setB(glm::vec3(0.0f, glm::sin((float)glfwGetTime() * 0.5f), 0.0f));
-    lineManager.getLines()[3]->setB(glm::vec3(0.0f, 0.0f, glm::cos((float)glfwGetTime())));
+    lineManager.getLines()[DIRECTION]->setA(glm::vec3(0.0f));
+	lineManager.getLines()[DIRECTION]->setB(glm::vec3(glm::sin((float)glfwGetTime()), glm::sin((float)glfwGetTime() * 0.5f), glm::cos((float)glfwGetTime())));
+    lineManager.getLines()[XAXIS]->setB(glm::vec3(glm::sin((float)glfwGetTime()), 0.0f, 0.0f));
+    lineManager.getLines()[YAXIS]->setB(glm::vec3(0.0f, glm::sin((float)glfwGetTime() * 0.5f), 0.0f));
+    lineManager.getLines()[ZAXIS]->setB(glm::vec3(0.0f, 0.0f, glm::cos((float)glfwGetTime())));
     
     cubeManager.resolveMovement();
 }
@@ -221,8 +237,8 @@ void render(GLFWwindow* window, Camera& camera, Shader& basicShader, Shader& lig
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
     Shader::setViewAndProjection(camera.getViewMatrix(), glm::perspective(glm::radians(camera.getZoom()), (GLfloat)WINDOW_WIDTH / (GLfloat)WINDOW_HEIGHT, 0.01f, 100.0f));
-
-    cubeManager.render(basicShader);
+    
+    cubeManager.render(basicShader, lightManager);
     lightManager.render(lightSourceShader);
 	lineManager.render(lineShader);
 
