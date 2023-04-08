@@ -7,6 +7,7 @@
 #include "Light.h"
 #include "LightManager.h"
 #include "Line.h"
+#include "LineManager.h"
 #include "Shader.h"
 
 #define WINDOW_WIDTH    1020
@@ -21,7 +22,7 @@ void update(
     CubeManager& cubeManager,
     LightManager& lightManager,
     GJKCollisionChecker& gjk, 
-    Line& line);
+    LineManager& lineManager);
 void render(
     GLFWwindow* window, 
     Camera& camera, 
@@ -31,7 +32,7 @@ void render(
     CubeManager& cubeManager,
     LightManager& lightManager,
     GJKCollisionChecker& gjk, 
-    Line& line);
+    LineManager& lineManager);
 
 int main(void)
 {
@@ -79,7 +80,12 @@ int main(void)
 	lightManager.addLight(&pointLight1);
     
     Line line(glm::vec3(0.0f), glm::normalize(glm::vec3(1.0f, 0.0f, 0.0f)));
-    
+    Line direction(glm::vec3(0.0f), glm::vec3(1.0f, 0.0f, 0.0f));
+    direction.setAColor(glm::vec3(0.0f, 0.0f, 1.0f));
+    LineManager lineManager;
+	lineManager.addLine(&line);
+	lineManager.addLine(&direction);
+
     Shader basicShader("res/shaders/basic.shader");
     Shader lightSourceShader("res/shaders/lightSource.shader");
     Shader lineShader("res/shaders/line.shader");
@@ -99,7 +105,7 @@ int main(void)
             cubeManager,
             lightManager,
             gjk,
-            line);
+            lineManager);
         
         render(
             window, 
@@ -110,7 +116,7 @@ int main(void)
             cubeManager, 
 			lightManager,
             gjk,
-            line);
+            lineManager);
     }
 
     glfwTerminate();
@@ -153,7 +159,7 @@ void processInput(GLFWwindow* window, Camera& camera, LightManager& lightManager
     camera.setMousePosition(mousePositionX, mousePositionY);
 }
 
-void update(CubeManager& cubeManager, LightManager& lightManager, GJKCollisionChecker& gjk, Line& line)
+void update(CubeManager& cubeManager, LightManager& lightManager, GJKCollisionChecker& gjk, LineManager& lineManager)
 {
     lightManager.getLights()[0]->setPosition(
         gjk.findFurthestPointOnDirection(
@@ -168,13 +174,13 @@ void update(CubeManager& cubeManager, LightManager& lightManager, GJKCollisionCh
         )
     );
     
-    line.setA(glm::vec3(0.0f));
-    line.setB(lightManager.getLights()[0]->getPosition());
+    lineManager.getLines()[0]->setA(glm::vec3(0.0f));
+    lineManager.getLines()[0]->setB(lightManager.getLights()[0]->getPosition());
     
     cubeManager.resolveMovement();
 }
 
-void render(GLFWwindow* window, Camera& camera, Shader& basicShader, Shader& lightSourceShader, Shader& lineShader, CubeManager& cubeManager, LightManager& lightManager, GJKCollisionChecker& gjk, Line& line)
+void render(GLFWwindow* window, Camera& camera, Shader& basicShader, Shader& lightSourceShader, Shader& lineShader, CubeManager& cubeManager, LightManager& lightManager, GJKCollisionChecker& gjk, LineManager& lineManager)
 {
     /* Render here */
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
@@ -183,12 +189,7 @@ void render(GLFWwindow* window, Camera& camera, Shader& basicShader, Shader& lig
 
     cubeManager.render(basicShader);
     lightManager.render(lightSourceShader);
-
-    lineShader
-        .use()
-        .setUniform("view", Shader::getViewMatrix())
-        .setUniform("projection", Shader::getProjectionMatrix());
-    line.render();
+	lineManager.render(lineShader);
 
     /* Swap front and back buffers */
     glfwSwapBuffers(window);

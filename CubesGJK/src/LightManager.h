@@ -1,6 +1,5 @@
 #pragma once
 
-#include "Camera.h"
 #include "Light.h"
 #include "Shader.h"
 #include <vector>
