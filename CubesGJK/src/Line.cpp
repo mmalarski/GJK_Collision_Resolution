@@ -4,8 +4,8 @@ Line::Line(glm::vec3 A, glm::vec3 B)
 {
 	this->setA(A);
 	this->setB(B);
-	this->setAColor(glm::vec3(1.0f, 0.0f, 0.0f));
-	this->setBColor(glm::vec3(1.0f, 1.0f, 1.0f));
+	this->setAColor(glm::vec3(1.0f, 1.0f, 1.0f));
+	this->setBColor(glm::vec3(1.0f, 0.0f, 1.0f));
 	this->VAO = 0;
 	this->VBO = 0;
 	initializeBuffers();
@@ -47,6 +47,12 @@ void Line::setBColor(glm::vec3 color)
 	glBindBuffer(GL_ARRAY_BUFFER, this->VBO);
 	glBufferData(GL_ARRAY_BUFFER, sizeof(this->lineVertices), this->lineVertices, GL_STATIC_DRAW);
 	glBindBuffer(GL_ARRAY_BUFFER, 0);
+}
+
+
+const glm::vec3 Line::getDirection() const
+{
+	return glm::normalize(this->lineVertices[2] - this->lineVertices[0]);
 }
 
 void Line::render()

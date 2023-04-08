@@ -14,6 +14,7 @@ public:
 	void setB(glm::vec3 B);
 	void setBColor(glm::vec3 color);
 	void setAColor(glm::vec3 color);
+	const glm::vec3 getDirection() const;
 	void render();
 	
 private:

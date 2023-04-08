@@ -19,7 +19,7 @@ public:
 	Cube();
 	Cube(const glm::vec3& position);
 	~Cube();
-	void render() const;
+	void render(GLboolean wire = 0) const;
 	const GLuint getVAO() const;
 	const GLuint getVBO() const;
 	const std::vector<glm::vec3> getRawVertices() const;
