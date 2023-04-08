@@ -16,6 +16,12 @@ GJKCollisionChecker::Simplex& GJKCollisionChecker::Simplex::operator=(std::initi
 	return *this;
 }
 
+void GJKCollisionChecker::Simplex::pushFront(glm::vec3 point)
+{
+	this->points = { point, this->points[0], this->points[1], this->points[2] };
+	this->m_size = std::min(m_size + 1, 4u);
+}
+
 glm::vec3 GJKCollisionChecker::Simplex::operator[](GLuint index)
 { 
 	return this->points[index]; 
@@ -44,7 +50,7 @@ void GJKCollisionChecker::Simplex::render(Shader& shader) const
 		{
 			if (vertex != otherVertex)
 			{
-				//lineManager.addLine(new Line(vertex, otherVertex));
+				Line::drawLine(shader, vertex, Colors::Green , otherVertex, Colors::Green);
 			}
 		}
 	}

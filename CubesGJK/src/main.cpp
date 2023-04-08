@@ -1,4 +1,5 @@
 #include "Camera.h"
+#include "Colors.h"
 #include "CubeManager.h"
 #include <GL/glew.h>
 #include <GLFW/glfw3.h>
@@ -20,33 +21,6 @@ struct GameLoop
     GLint64 deltaTime;
     const GLint64 SECONDS_PER_FRAME = 1 / 60;
 };
-
-struct Colors
-{
-	static glm::vec3 Red        ;   
-	static glm::vec3 Green      ; 
-	static glm::vec3 Blue       ;  
-	static glm::vec3 Yellow     ;
-	static glm::vec3 Cyan       ;  
-	static glm::vec3 Magenta    ;
-	static glm::vec3 White      ; 
-	static glm::vec3 Black      ; 
-	static glm::vec3 Orange     ;
-	static glm::vec3 Purple     ;
-	static glm::vec3 Brown      ; 
-};
-
-glm::vec3 Colors::Red      =   { 1.0f, 0.0f, 0.0f };
-glm::vec3 Colors::Green    =   { 0.0f, 1.0f, 0.0f };
-glm::vec3 Colors::Blue     =   { 0.0f, 0.0f, 1.0f };
-glm::vec3 Colors::Yellow   =   { 1.0f, 1.0f, 0.0f };
-glm::vec3 Colors::Cyan     =   { 0.0f, 1.0f, 1.0f };
-glm::vec3 Colors::Magenta  =   { 1.0f, 0.0f, 1.0f };
-glm::vec3 Colors::White    =   { 1.0f, 1.0f, 1.0f };
-glm::vec3 Colors::Black    =   { 0.0f, 0.0f, 0.0f };
-glm::vec3 Colors::Orange   =   { 1.0f, 0.5f, 0.0f };
-glm::vec3 Colors::Purple   =   { 0.5f, 0.0f, 1.0f };
-glm::vec3 Colors::Brown    =   { 0.5f, 0.25f, 0.0f };
 
 enum Cubes
 {
@@ -130,6 +104,8 @@ int main(void)
     gameLoop.previousTime = glfwGetTime();
     gameLoop.deltaTime = 0.0;
 
+    Line::init();
+
     /* Loop until the user closes the window */
     while (!glfwWindowShouldClose(window))
     {
@@ -166,7 +142,7 @@ int main(void)
             gjk
         );
     }
-
+    Line::cleanUp();
     glfwTerminate();
     return 0;
 }
@@ -202,10 +178,6 @@ void processInput(GLFWwindow* window, Camera& camera, CubeManager& cubeManager)
     if (glfwGetKey(window, GLFW_KEY_K) == GLFW_PRESS)
         cubeManager[MOVING_CUBE].moveWithVector(glm::vec3({ 0.0f, -0.001f, 0.0f }));
 
-    //if ctrl pressed set timescale to zero
-    if(glfwGetKey(window, GLFW_KEY_LEFT_CONTROL) == GLFW_PRESS)
-		glfwSetTime(0.0);
-
     GLdouble mousePositionX, mousePositionY;
     glfwGetCursorPos(window, &mousePositionX, &mousePositionY);
     camera.setMousePosition(mousePositionX, mousePositionY);
@@ -214,11 +186,12 @@ void processInput(GLFWwindow* window, Camera& camera, CubeManager& cubeManager)
 void update(GLint64& deltaTime, CubeManager& cubeManager, LightManager& lightManager, GJKCollisionChecker& gjk)
 {
 	glm::vec3 direction = cubeManager[STATIC_CUBE].getPosition() - cubeManager[MOVING_CUBE].getPosition();
-    lightManager[MOVING_CUBE].setPosition(
+    lightManager[0].setPosition(
         gjk.findFurthestPointOnDirection(cubeManager[MOVING_CUBE], glm::normalize(direction))
     );
-    lightManager[STATIC_CUBE].setPosition(
-        gjk.findFurthestPointOnDirection(cubeManager[STATIC_CUBE], -glm::normalize(direction))
+    lightManager[1].setPosition(
+        //gjk.findFurthestPointOnDirection(cubeManager[STATIC_CUBE], -glm::normalize(direction))
+        glm::vec3(0.0f)
     );
     
     cubeManager.resolveMovement();
@@ -243,6 +216,8 @@ void render(GLFWwindow* window, Camera& camera, Shader& basicShader, Shader& lig
 	Line::drawLine(lineShader, glm::vec3(0.0f), Colors::Black, glm::vec3(0.0f, 1.0f, 0.0f), Colors::Green);
 	Line::drawLine(lineShader, glm::vec3(0.0f), Colors::Black, glm::vec3(0.0f, 0.0f, 1.0f), Colors::Blue);
 
+    gjk.renderMinkowskiDifference(lineShader, cubeManager[MOVING_CUBE], cubeManager[STATIC_CUBE]);
+    
     /* Swap front and back buffers */
     glfwSwapBuffers(window);
 

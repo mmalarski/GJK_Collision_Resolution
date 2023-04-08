@@ -1,15 +1,19 @@
 #pragma once
+#include <array>
 #include "glm/glm.hpp"
 #include "Cube.h"
-#include <array>
-#include "Shader.h"
+#include "Colors.h"
 #include "Line.h"
+#include <list>
+#include "Shader.h"
 
 class GJKCollisionChecker
 {
 public:
 	glm::vec3 findFurthestPointOnDirection(Cube& cube, glm::vec3 direction);
 	glm::vec3 findSupportPoint(Cube& cube1, Cube& cube2, glm::vec3 direction);
+	GLboolean checkCollision(Cube& cube1, Cube& cube2);
+	void renderMinkowskiDifference(Shader& shader, Cube& cube1, Cube& cube2);
 	void renderSimplex(Shader& shader);
 	
 private:
