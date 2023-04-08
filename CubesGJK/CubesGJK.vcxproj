@@ -136,6 +136,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="src\LightManager.cpp" />
     <ClCompile Include="src\Line.cpp" />
     <ClCompile Include="src\GJKCollisionChecker.cpp" />
     <ClCompile Include="src\Light.cpp" />
@@ -146,6 +147,7 @@
     <ClCompile Include="src\main.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="src\LightManager.h" />
     <ClInclude Include="src\Line.h" />
     <ClInclude Include="src\GJKCollisionChecker.h" />
     <ClInclude Include="src\Light.h" />

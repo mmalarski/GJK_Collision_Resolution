@@ -1,5 +1,10 @@
 #include "CubeManager.h"
 
+CubeManager::CubeManager()
+{
+	this->cubes = std::vector<Cube*>();
+}
+
 CubeManager::CubeManager(const GLuint& cubeNumber, const GLfloat& rangeOnXAxis, const GLfloat& rangeOnZAxis, const GLfloat& height)
 {
 	std::random_device r;
