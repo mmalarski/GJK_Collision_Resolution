@@ -67,8 +67,8 @@ int main(void)
     
     Camera camera(WINDOW_WIDTH * 0.5, WINDOW_HEIGHT * 0.5);
     
-    Cube cube({ -0.6f, 0.0f, 0.0f });
-    Cube cube2({ 0.6f, 0.0f, 0.0f });
+    Cube cube({ -0.6f, 0.6f, 0.0f });
+    Cube cube2({ 0.6f, 0.6f, 0.0f });
     CubeManager cubeManager;
 	cubeManager.addCube(&cube);
 	cubeManager.addCube(&cube2);
@@ -80,11 +80,20 @@ int main(void)
 	lightManager.addLight(&pointLight1);
     
     Line line(glm::vec3(0.0f), glm::normalize(glm::vec3(1.0f, 0.0f, 0.0f)));
-    Line direction(glm::vec3(0.0f), glm::vec3(1.0f, 0.0f, 0.0f));
-    direction.setAColor(glm::vec3(0.0f, 0.0f, 1.0f));
+    Line xAxis(glm::vec3(0.0f), glm::vec3(1.0f, 0.0f, 0.0f));
+    Line yAxis(glm::vec3(0.0f), glm::vec3(0.0f, 1.0f, 0.0f));
+    Line zAxis(glm::vec3(0.0f), glm::vec3(0.0f, 0.0f, 1.0f));
+	xAxis.setAColor(glm::vec3(1.0f, 0.0f, 0.0f));
+    xAxis.setBColor(glm::vec3(0.0f));
+	yAxis.setAColor(glm::vec3(0.0f, 1.0f, 0.0f));
+	yAxis.setBColor(glm::vec3(0.0f));
+	zAxis.setAColor(glm::vec3(0.0f, 0.0f, 1.0f));
+	zAxis.setBColor(glm::vec3(0.0f));
     LineManager lineManager;
 	lineManager.addLine(&line);
-	lineManager.addLine(&direction);
+	lineManager.addLine(&xAxis);
+	lineManager.addLine(&yAxis);
+	lineManager.addLine(&zAxis);
 
     Shader basicShader("res/shaders/basic.shader");
     Shader lightSourceShader("res/shaders/lightSource.shader");
