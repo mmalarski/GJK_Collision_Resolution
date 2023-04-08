@@ -193,8 +193,7 @@ void render(GLFWwindow* window, Camera& camera, Shader& basicShader, Shader& lig
     lineShader
         .use()
         .setUniform("view", Shader::getViewMatrix())
-        .setUniform("projection", Shader::getProjectionMatrix())
-        .setUniform("u_Color", glm::vec4(1.0f, 0.0f, 0.0f, 1.0f));
+        .setUniform("projection", Shader::getProjectionMatrix());
     line.render();
 
     basicShader

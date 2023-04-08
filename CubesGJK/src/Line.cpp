@@ -4,6 +4,8 @@ Line::Line(glm::vec3 A, glm::vec3 B)
 {
 	this->setA(A);
 	this->setB(B);
+	this->setAColor(glm::vec3(1.0f, 0.0f, 0.0f));
+	this->setBColor(glm::vec3(1.0f, 1.0f, 1.0f));
 	this->VAO = 0;
 	this->VBO = 0;
 	initializeBuffers();
@@ -23,9 +25,25 @@ void Line::setA(glm::vec3 A)
 	glBindBuffer(GL_ARRAY_BUFFER, 0);
 }
 
+void Line::setAColor(glm::vec3 color)
+{
+	this->lineVertices[1] = color;
+	glBindBuffer(GL_ARRAY_BUFFER, this->VBO);
+	glBufferData(GL_ARRAY_BUFFER, sizeof(this->lineVertices), this->lineVertices, GL_STATIC_DRAW);
+	glBindBuffer(GL_ARRAY_BUFFER, 0);
+}
+
 void Line::setB(glm::vec3 B)
 {
-	this->lineVertices[1] = B;
+	this->lineVertices[2] = B;
+	glBindBuffer(GL_ARRAY_BUFFER, this->VBO);
+	glBufferData(GL_ARRAY_BUFFER, sizeof(this->lineVertices), this->lineVertices, GL_STATIC_DRAW);
+	glBindBuffer(GL_ARRAY_BUFFER, 0);
+}
+
+void Line::setBColor(glm::vec3 color)
+{
+	this->lineVertices[3] = color;
 	glBindBuffer(GL_ARRAY_BUFFER, this->VBO);
 	glBufferData(GL_ARRAY_BUFFER, sizeof(this->lineVertices), this->lineVertices, GL_STATIC_DRAW);
 	glBindBuffer(GL_ARRAY_BUFFER, 0);
@@ -34,8 +52,10 @@ void Line::setB(glm::vec3 B)
 void Line::render()
 {
 	glBindBuffer(GL_ARRAY_BUFFER, this->VBO);
-	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(GLfloat), (void*)0);
+	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 6 * sizeof(GLfloat), (void*)0);
 	glEnableVertexAttribArray(0);
+	glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 6 * sizeof(GLfloat), (void*)(3 * sizeof(float)));
+	glEnableVertexAttribArray(1);
 	glDrawArrays(GL_LINES, 0, 2);
 }
 
