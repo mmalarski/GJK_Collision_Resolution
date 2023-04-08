@@ -70,7 +70,7 @@ int main(void)
     Light pointLight1({ 0.0f, 0.0f, 2.0f });
     Cube cube({ -0.6f, 0.0f, 0.0f });
     Cube cube2({ 0.6f, 0.0f, 0.0f });
-    Line line(glm::vec3(0.0f), glm::normalize(glm::vec3(1.0f, 1.0f, 2.0f)));
+    Line line(glm::vec3(0.0f), glm::normalize(glm::vec3(1.0f, 0.0f, 0.0f)));
     Shader basicShader("res/shaders/basic.shader");
     Shader lightSourceShader("res/shaders/lightSource.shader");
     Shader lineShader("res/shaders/line.shader");
@@ -165,7 +165,8 @@ void update(Cube& cube, Cube& cube2, Light& pointLight, Light& pointLight1, GJKC
     pointLight.setPosition(gjk.findFurthestPointOnDirection(cube, glm::vec3(1.0f, 2.0f, 3.0f)));
     pointLight1.setPosition(gjk.findFurthestPointOnDirection(cube2, -glm::vec3(1.0f, 2.0f, 3.0f)));
     line.setA(glm::vec3(0.0f));
-	line.setB(pointLight.getPosition());
+    line.setB(pointLight.getPosition());
+    
     cube.resolveMovement();
     pointLight.resolveMovement();
 }

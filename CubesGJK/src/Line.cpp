@@ -18,11 +18,17 @@ Line::~Line()
 void Line::setA(glm::vec3 A)
 {
 	this->lineVertices[0] = A;
+	glBindBuffer(GL_ARRAY_BUFFER, this->VBO);
+	glBufferData(GL_ARRAY_BUFFER, sizeof(this->lineVertices), this->lineVertices, GL_STATIC_DRAW);
+	glBindBuffer(GL_ARRAY_BUFFER, 0);
 }
 
 void Line::setB(glm::vec3 B)
 {
 	this->lineVertices[1] = B;
+	glBindBuffer(GL_ARRAY_BUFFER, this->VBO);
+	glBufferData(GL_ARRAY_BUFFER, sizeof(this->lineVertices), this->lineVertices, GL_STATIC_DRAW);
+	glBindBuffer(GL_ARRAY_BUFFER, 0);
 }
 
 void Line::render()
