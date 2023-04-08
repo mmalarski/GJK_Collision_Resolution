@@ -15,12 +15,11 @@
 void processInput(
     GLFWwindow* window, 
     Camera& camera, 
-    Light& directionalLight, 
+    LightManager& lightManager, 
     CubeManager& cubeManager);
 void update(
     CubeManager& cubeManager,
-    Light& pointLight,
-    Light& pointLight1,
+    LightManager& lightManager,
     GJKCollisionChecker& gjk, 
     Line& line);
 void render(
@@ -93,13 +92,12 @@ int main(void)
         processInput(
             window, 
             camera, 
-            pointLight, 
+            lightManager, 
             cubeManager);
         
         update(
             cubeManager,
-            pointLight,
-            pointLight1,
+            lightManager,
             gjk,
             line);
         
@@ -119,7 +117,7 @@ int main(void)
     return 0;
 }
 
-void processInput(GLFWwindow* window, Camera& camera, Light& pointLight, CubeManager& cubeManager)
+void processInput(GLFWwindow* window, Camera& camera, LightManager& lightManager, CubeManager& cubeManager)
 {
     if (glfwGetKey(window, GLFW_KEY_ESCAPE) == GLFW_PRESS)
         glfwSetWindowShouldClose(window, true);
@@ -136,19 +134,6 @@ void processInput(GLFWwindow* window, Camera& camera, Light& pointLight, CubeMan
         camera.processKeyboard(UP);
     if (glfwGetKey(window, GLFW_KEY_LEFT_SHIFT) == GLFW_PRESS)
         camera.processKeyboard(DOWN);
-
-    if (glfwGetKey(window, GLFW_KEY_T) == GLFW_PRESS)
-        pointLight.moveWithVector({ 0.0f, 0.0f, -0.01f });
-    if (glfwGetKey(window, GLFW_KEY_G) == GLFW_PRESS)
-        pointLight.moveWithVector({ 0.0f, 0.0f, 0.01f });
-    if (glfwGetKey(window, GLFW_KEY_F) == GLFW_PRESS)
-        pointLight.moveWithVector({ -0.01f, 0.0f, 0.0f });
-    if (glfwGetKey(window, GLFW_KEY_H) == GLFW_PRESS)
-        pointLight.moveWithVector({ 0.01f, 0.0f, 0.0f });
-    if (glfwGetKey(window, GLFW_KEY_Y) == GLFW_PRESS)
-        pointLight.moveWithVector({ 0.0f, 0.01f, 0.0f });
-    if (glfwGetKey(window, GLFW_KEY_R) == GLFW_PRESS)
-        pointLight.moveWithVector({ 0.0f, -0.01f, 0.0f });
 
     if (glfwGetKey(window, GLFW_KEY_L) == GLFW_PRESS)
         cubeManager.getCubes()[0]->moveWithVector(glm::vec3({0.0f, 0.0f, -0.001f}));
@@ -168,18 +153,23 @@ void processInput(GLFWwindow* window, Camera& camera, Light& pointLight, CubeMan
     camera.setMousePosition(mousePositionX, mousePositionY);
 }
 
-void update(CubeManager& cubeManager, Light& pointLight, Light& pointLight1, GJKCollisionChecker& gjk, Line& line)
+void update(CubeManager& cubeManager, LightManager& lightManager, GJKCollisionChecker& gjk, Line& line)
 {
-    pointLight.setPosition(
+    lightManager.getLights()[0]->setPosition(
         gjk.findFurthestPointOnDirection(
 			*cubeManager.getCubes()[0],
-            glm::vec3(1.0f, 2.0f, 3.0f)));
-    pointLight1.setPosition(
+            glm::vec3(1.0f, 2.0f, 3.0f)
+        )
+    );
+    lightManager.getLights()[1]->setPosition(
         gjk.findFurthestPointOnDirection(
 			*cubeManager.getCubes()[1],
-            -glm::vec3(1.0f, 2.0f, 3.0f)));
+            -glm::vec3(1.0f, 2.0f, 3.0f)
+        )
+    );
+    
     line.setA(glm::vec3(0.0f));
-    line.setB(pointLight.getPosition());
+    line.setB(lightManager.getLights()[0]->getPosition());
     
     cubeManager.resolveMovement();
 }
