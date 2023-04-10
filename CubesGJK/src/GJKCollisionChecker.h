@@ -1,7 +1,9 @@
 #pragma once
-#include "glm/glm.hpp"
-#include "Cube.h"
 #include <array>
+#include "Colors.h"
+#include "Cube.h"
+#include "glm/glm.hpp"
+#include "macros.h"
 #include "Shader.h"
 #include "Line.h"
 
@@ -11,6 +13,8 @@ public:
 	glm::vec3 findFurthestPointOnDirection(Cube& cube, glm::vec3 direction);
 	glm::vec3 findSupportPoint(Cube& cube1, Cube& cube2, glm::vec3 direction);
 	void renderSimplex(Shader& shader);
+	GLboolean checkCollision(Cube& cube1, Cube& cube2);
+	void renderMinkowskiDifference(Shader& shader, Cube& cube1, Cube& cube2);
 	
 private:
 	struct Simplex

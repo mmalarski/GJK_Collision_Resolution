@@ -1,4 +1,5 @@
 #include "Camera.h"
+#include "Colors.h"
 #include "CubeManager.h"
 #include <GL/glew.h>
 #include <GLFW/glfw3.h>
@@ -20,33 +21,6 @@ struct GameLoop
     GLint64 deltaTime;
     const GLint64 SECONDS_PER_FRAME = 1 / 60;
 };
-
-struct Colors
-{
-	static glm::vec3 Red        ;   
-	static glm::vec3 Green      ; 
-	static glm::vec3 Blue       ;  
-	static glm::vec3 Yellow     ;
-	static glm::vec3 Cyan       ;  
-	static glm::vec3 Magenta    ;
-	static glm::vec3 White      ; 
-	static glm::vec3 Black      ; 
-	static glm::vec3 Orange     ;
-	static glm::vec3 Purple     ;
-	static glm::vec3 Brown      ; 
-};
-
-glm::vec3 Colors::Red      =   { 1.0f, 0.0f, 0.0f };
-glm::vec3 Colors::Green    =   { 0.0f, 1.0f, 0.0f };
-glm::vec3 Colors::Blue     =   { 0.0f, 0.0f, 1.0f };
-glm::vec3 Colors::Yellow   =   { 1.0f, 1.0f, 0.0f };
-glm::vec3 Colors::Cyan     =   { 0.0f, 1.0f, 1.0f };
-glm::vec3 Colors::Magenta  =   { 1.0f, 0.0f, 1.0f };
-glm::vec3 Colors::White    =   { 1.0f, 1.0f, 1.0f };
-glm::vec3 Colors::Black    =   { 0.0f, 0.0f, 0.0f };
-glm::vec3 Colors::Orange   =   { 1.0f, 0.5f, 0.0f };
-glm::vec3 Colors::Purple   =   { 0.5f, 0.0f, 1.0f };
-glm::vec3 Colors::Brown    =   { 0.5f, 0.25f, 0.0f };
 
 enum Cubes
 {
@@ -243,6 +217,8 @@ void render(GLFWwindow* window, Camera& camera, Shader& basicShader, Shader& lig
 	Line::drawLine(lineShader, glm::vec3(0.0f), Colors::Black, glm::vec3(0.0f, 1.0f, 0.0f), Colors::Green);
 	Line::drawLine(lineShader, glm::vec3(0.0f), Colors::Black, glm::vec3(0.0f, 0.0f, 1.0f), Colors::Blue);
 
+    gjk.renderMinkowskiDifference(lineShader, cubeManager[MOVING_CUBE], cubeManager[STATIC_CUBE]);
+    
     /* Swap front and back buffers */
     glfwSwapBuffers(window);
 
