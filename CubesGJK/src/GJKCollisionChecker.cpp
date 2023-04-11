@@ -4,12 +4,12 @@ glm::vec3 GJKCollisionChecker::findFurthestPointOnDirection(Cube& cube, glm::vec
 {
 	std::vector<glm::vec3> vertices = cube.getTranslatedVertices();
 	
-	glm::vec3 maxPoint;
+	glm::vec3 maxPoint = glm::vec3(0.0f);
 	GLfloat maxDistance = -INFINITY;
 
-	for (glm::vec3 vertex : vertices)
+	for (const glm::vec3& vertex : vertices)
 	{
-		GLfloat distance = glm::dot(direction, vertex);
+		GLfloat distance = glm::dot(vertex, direction);
 		if (distance > maxDistance)
 		{
 			maxDistance = distance;
@@ -25,11 +25,6 @@ glm::vec3 GJKCollisionChecker::findSupportPoint(Cube& cube1, Cube& cube2, glm::v
 	return this->findFurthestPointOnDirection(cube1, direction) - this->findFurthestPointOnDirection(cube2, -direction);
 }
 
-void GJKCollisionChecker::renderSimplex(Shader& shader)
-{
-	this->points.render(shader);
-}
-
 GLboolean GJKCollisionChecker::checkCollision(Cube& cube1, Cube& cube2)
 {
 	glm::vec3 support = findSupportPoint(cube1, cube2, cube1.getPosition() - cube2.getPosition());
@@ -38,7 +33,7 @@ GLboolean GJKCollisionChecker::checkCollision(Cube& cube1, Cube& cube2)
 	while (true)
 	{
 		support = findSupportPoint(cube1, cube2, direction);
-		if (glm::dot(support, direction) <= 0)
+		if (glm::dot(support, direction) < 0)
 		{
 			return GL_FALSE;
 		}

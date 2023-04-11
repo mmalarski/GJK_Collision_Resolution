@@ -12,6 +12,7 @@
 
 #define WINDOW_WIDTH    1020
 #define WINDOW_HEIGHT   860
+#define DISPLAY_MINKOWSKI_DIFFERENCE GL_FALSE //change to get rid of the auxiliary lines
 
 struct GameLoop
 {
@@ -82,8 +83,8 @@ int main(void)
     
     Camera camera(WINDOW_WIDTH * 0.5, WINDOW_HEIGHT * 0.5);
     
-    Cube cube({ -1.0f, 0.6f, 0.0f });
-    Cube cube2({ 1.3f, 0.6f, 0.2f });
+    Cube cube({ -0.3f, 0.6f, -1.0f });
+    Cube cube2({ 0.3f, 0.6f, 1.2f });
     CubeManager cubeManager;
 	cubeManager.addCube(&cube);
 	cubeManager.addCube(&cube2);
@@ -195,17 +196,16 @@ void update(GLint64& deltaTime, CubeManager& cubeManager, LightManager& lightMan
         gjk.findFurthestPointOnDirection(cubeManager[STATIC_CUBE], -glm::normalize(direction))
     );
 
-    cubeManager[MOVING_CUBE].simulateNextMovement();
-    cubeManager[STATIC_CUBE].simulateNextMovement();
+    cubeManager.simulateNextMovements();
         
     if (gjk.checkCollision(cubeManager[MOVING_CUBE], cubeManager[STATIC_CUBE]))
     {
 		cubeManager[MOVING_CUBE].setColor(Colors::Red);
 		cubeManager[STATIC_CUBE].setColor(Colors::Red);
-        cubeManager[MOVING_CUBE].revertSimulatedMovement();
-        cubeManager[STATIC_CUBE].revertSimulatedMovement();
+        cubeManager.revertSimulatedMovements();
         return;
     }
+    
 	cubeManager[MOVING_CUBE].setColor(Colors::White);
 	cubeManager[STATIC_CUBE].setColor(Colors::White);
     cubeManager.resetDirectionToMove();
@@ -231,7 +231,8 @@ void render(GLFWwindow* window, Camera& camera, Shader& basicShader, Shader& lig
 	Line::drawLine(lineShader, glm::vec3(0.0f), Colors::Black, glm::vec3(0.0f, 1.0f, 0.0f), Colors::Green);
 	Line::drawLine(lineShader, glm::vec3(0.0f), Colors::Black, glm::vec3(0.0f, 0.0f, 1.0f), Colors::Blue);
 
-    gjk.renderMinkowskiDifference(lineShader, cubeManager[MOVING_CUBE], cubeManager[STATIC_CUBE]);
+    if(DISPLAY_MINKOWSKI_DIFFERENCE)
+        gjk.renderMinkowskiDifference(lineShader, cubeManager[MOVING_CUBE], cubeManager[STATIC_CUBE]);
     
     /* Swap front and back buffers */
     glfwSwapBuffers(window);

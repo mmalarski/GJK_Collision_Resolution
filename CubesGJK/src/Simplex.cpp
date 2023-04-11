@@ -41,17 +41,3 @@ auto Simplex::end() const
 { 
 	return this->points.end() - (4 - this->m_size); 
 }
-
-void Simplex::render(Shader& shader) const
-{
-	for (glm::vec3 vertex : this->points)
-	{
-		for (glm::vec3 otherVertex : this->points)
-		{
-			if (vertex != otherVertex)
-			{
-				Line::drawLine(shader, vertex, Colors::Cyan, otherVertex, Colors::Cyan);
-			}
-		}
-	}
-}

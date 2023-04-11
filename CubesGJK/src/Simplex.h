@@ -4,7 +4,6 @@
 #include <glm/glm.hpp>
 #include <GL/glew.h>
 #include "Line.h"
-#include "Shader.h"
 
 struct Simplex
 {
@@ -16,7 +15,6 @@ public:
 	GLuint size();
 	auto begin() const;
 	auto end() const;
-	void render(Shader& shader) const;
 
 private:
 	std::array<glm::vec3, 4> points;
