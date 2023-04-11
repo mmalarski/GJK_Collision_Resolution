@@ -83,7 +83,7 @@ int main(void)
     Camera camera(WINDOW_WIDTH * 0.5, WINDOW_HEIGHT * 0.5);
     
     Cube cube({ -1.0f, 0.6f, 0.0f });
-    Cube cube2({ 1.0f, 0.6f, 0.0f });
+    Cube cube2({ 1.3f, 0.6f, 0.2f });
     CubeManager cubeManager;
 	cubeManager.addCube(&cube);
 	cubeManager.addCube(&cube2);
@@ -164,17 +164,17 @@ void processInput(GLFWwindow* window, Camera& camera, CubeManager& cubeManager)
         camera.processKeyboard(DOWN);
 
     if (glfwGetKey(window, GLFW_KEY_L) == GLFW_PRESS)
-        cubeManager[MOVING_CUBE].moveWithVector(glm::vec3({0.0f, 0.0f, -0.001f}));
+        cubeManager[MOVING_CUBE].moveWithVector(glm::vec3({0.0f, 0.0f, -0.01f}));
     if (glfwGetKey(window, GLFW_KEY_PERIOD) == GLFW_PRESS)
-        cubeManager[MOVING_CUBE].moveWithVector(glm::vec3({ 0.0f, 0.0f, 0.001f }));
+        cubeManager[MOVING_CUBE].moveWithVector(glm::vec3({ 0.0f, 0.0f, 0.01f }));
     if (glfwGetKey(window, GLFW_KEY_COMMA) == GLFW_PRESS)
-        cubeManager[MOVING_CUBE].moveWithVector(glm::vec3({ -0.001f, 0.0f, 0.0f }));
+        cubeManager[MOVING_CUBE].moveWithVector(glm::vec3({ -0.01f, 0.0f, 0.0f }));
     if (glfwGetKey(window, GLFW_KEY_SLASH) == GLFW_PRESS)
-        cubeManager[MOVING_CUBE].moveWithVector(glm::vec3({ 0.001f, 0.0f, 0.0f }));
+        cubeManager[MOVING_CUBE].moveWithVector(glm::vec3({ 0.01f, 0.0f, 0.0f }));
     if (glfwGetKey(window, GLFW_KEY_SEMICOLON) == GLFW_PRESS)
-        cubeManager[MOVING_CUBE].moveWithVector(glm::vec3({ 0.0f, 0.001f, 0.0f }));
+        cubeManager[MOVING_CUBE].moveWithVector(glm::vec3({ 0.0f, 0.01f, 0.0f }));
     if (glfwGetKey(window, GLFW_KEY_K) == GLFW_PRESS)
-        cubeManager[MOVING_CUBE].moveWithVector(glm::vec3({ 0.0f, -0.001f, 0.0f }));
+        cubeManager[MOVING_CUBE].moveWithVector(glm::vec3({ 0.0f, -0.01f, 0.0f }));
 
     //if ctrl pressed set timescale to zero
     if(glfwGetKey(window, GLFW_KEY_LEFT_CONTROL) == GLFW_PRESS)
@@ -194,8 +194,22 @@ void update(GLint64& deltaTime, CubeManager& cubeManager, LightManager& lightMan
     lightManager[STATIC_CUBE].setPosition(
         gjk.findFurthestPointOnDirection(cubeManager[STATIC_CUBE], -glm::normalize(direction))
     );
+
+    cubeManager[MOVING_CUBE].simulateNextMovement();
+    cubeManager[STATIC_CUBE].simulateNextMovement();
+        
+    if (gjk.checkCollision(cubeManager[MOVING_CUBE], cubeManager[STATIC_CUBE]))
+    {
+		cubeManager[MOVING_CUBE].setColor(Colors::Red);
+		cubeManager[STATIC_CUBE].setColor(Colors::Red);
+        cubeManager[MOVING_CUBE].revertSimulatedMovement();
+        cubeManager[STATIC_CUBE].revertSimulatedMovement();
+        return;
+    }
+	cubeManager[MOVING_CUBE].setColor(Colors::White);
+	cubeManager[STATIC_CUBE].setColor(Colors::White);
+    cubeManager.resetDirectionToMove();
     
-    cubeManager.resolveMovement();
 }
 
 void render(GLFWwindow* window, Camera& camera, Shader& basicShader, Shader& lightSourceShader, Shader& lineShader, CubeManager& cubeManager, LightManager& lightManager, GJKCollisionChecker& gjk)

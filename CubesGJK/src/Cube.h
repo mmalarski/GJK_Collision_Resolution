@@ -27,13 +27,16 @@ public:
 	const glm::vec4 getColor() const;
 	const glm::mat4 getModelMatrix() const;
 	const glm::vec3 getPosition() const;
+	const glm::vec3 getDirectionToMove() const;
 	Cube& setColor(const glm::vec3& color);
 	Cube& setColor(const GLfloat& r, const GLfloat& g, const GLfloat& b, const GLfloat& a);
 	Cube& setPosition(const glm::vec3& position);
 	Cube& setPosition(const GLfloat& x, const GLfloat& y, const GLfloat& z);
 	Cube& setScale(const GLfloat& scale);
 	Cube& moveWithVector(const glm::vec3& direction);
-	Cube& resolveMovement();
+	Cube& simulateNextMovement();
+	Cube& revertSimulatedMovement();
+	Cube& resetDirectionToMove();
 
 private:
 	GLuint VBO = 0, VAO = 0, EBO = 0;

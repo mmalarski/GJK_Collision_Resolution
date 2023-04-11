@@ -41,11 +41,11 @@ const std::vector<Cube*>& CubeManager::getCubes() const
 	return this->cubes;
 }
 
-void CubeManager::resolveMovement()
+void CubeManager::resetDirectionToMove()
 {
 	for (Cube* cube : this->cubes)
 	{
-		cube->resolveMovement();
+		cube->resetDirectionToMove();
 	}
 }
 

@@ -30,7 +30,7 @@ void Light::setPosition(glm::vec3 position)
 
 void Light::resolveMovement()
 {
-	this->cube.resolveMovement();
+	this->cube.resetDirectionToMove();
 }
 
 const glm::vec3 Light::getPosition() const

@@ -15,7 +15,7 @@ public:
 	Cube& operator[](GLuint index);
 	void addCube(Cube* cube);
 	const std::vector<Cube*>& getCubes() const;
-	void resolveMovement();
+	void resetDirectionToMove();
 	void render(Shader& shader, LightManager& lightManager) const;
 private:
 	std::vector<Cube*> cubes;

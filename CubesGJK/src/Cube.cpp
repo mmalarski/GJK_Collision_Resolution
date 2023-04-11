@@ -87,6 +87,11 @@ void Cube::render(GLboolean wire) const {
 	 return glm::vec3(this->modelMatrix[3][0], this->modelMatrix[3][1], this->modelMatrix[3][2]);
  }
 
+ const glm::vec3 Cube::getDirectionToMove() const
+ {
+	 return this->directionToMove;
+ }
+
  Cube& Cube::setColor(const glm::vec3& color)
  {
 	 this->color = glm::vec4(color.x, color.y, color.z, 1.0f);
@@ -132,9 +137,21 @@ void Cube::render(GLboolean wire) const {
 	 return *this;
  }
 
- Cube& Cube::resolveMovement() 
+ Cube& Cube::simulateNextMovement()
  {
 	 this->modelMatrix = glm::translate(this->modelMatrix, this->directionToMove);
+	 return *this;
+ }
+ 
+ Cube& Cube::revertSimulatedMovement()
+ {
+	 this->modelMatrix = glm::translate(this->modelMatrix, -this->directionToMove);
+	 this->resetDirectionToMove();
+	 return *this;
+ }
+
+ Cube& Cube::resetDirectionToMove() 
+ {
 	 this->directionToMove = glm::vec3(0.0f);
 	 return *this;
  }
