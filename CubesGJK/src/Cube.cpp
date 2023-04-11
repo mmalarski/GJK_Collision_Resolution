@@ -65,7 +65,7 @@ void Cube::render(GLboolean wire) const {
  const std::vector<glm::vec3> Cube::getTranslatedVertices() const
  {
 	 std::vector<glm::vec3> vertices;
-	 for (glm::vec3 vertex : this->getRawVertices())
+	 for (const glm::vec3& vertex : this->getRawVertices())
 	 {
 		 vertices.push_back(glm::vec4(vertex, 1.0f) * glm::transpose(this->modelMatrix));
 	 }

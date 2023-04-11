@@ -12,7 +12,7 @@
 
 #define WINDOW_WIDTH    1020
 #define WINDOW_HEIGHT   860
-#define DISPLAY_MINKOWSKI_DIFFERENCE GL_FALSE //change to get rid of the auxiliary lines
+#define DISPLAY_MINKOWSKI_DIFFERENCE GL_TRUE //change to get rid of the auxiliary lines
 
 struct GameLoop
 {
