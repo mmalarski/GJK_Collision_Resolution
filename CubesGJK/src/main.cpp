@@ -9,15 +9,6 @@
 #define WINDOW_WIDTH    1020
 #define WINDOW_HEIGHT   860
 
-struct GameLoop
-{
-    GLint64 previousTime;
-    GLint64 currentTime;
-    GLint64 elapsedTime;
-    GLint64 idleTime;
-    const GLint64 SECONDS_PER_FRAME = 1 / 60;
-};
-
 void processInput(GLFWwindow* window, Camera& camera, Light& directionalLight);
 
 int main(void)
@@ -53,36 +44,38 @@ int main(void)
     glfwSetCursorPos(window, WINDOW_WIDTH * 0.5, WINDOW_HEIGHT * 0.5);
 
     Camera camera(WINDOW_WIDTH * 0.5, WINDOW_HEIGHT * 0.5);
-    Light pointLight({ 2.0f, 0.0f, 2.0f });
+    Light directionalLightPosition({ 2.0f, 0.0f, 2.0f });
+    Cube cube({ 0.0f, 3.0f, 0.0f });
     CubeManager cubeManager(10, 3.0f, 2.0f, 1.0f);
     Shader basicShader("res/shaders/basic.shader");
     Shader lightSourceShader("res/shaders/lightSource.shader");
 
     /* Loop until the user closes the window */
-
-    GameLoop gameLoop;
-    gameLoop.previousTime = glfwGetTime();
-    gameLoop.idleTime = 0.0;
     while (!glfwWindowShouldClose(window))
     {
-        gameLoop.currentTime = glfwGetTime();
-        gameLoop.elapsedTime = gameLoop.currentTime - gameLoop.previousTime;
-        gameLoop.previousTime = gameLoop.currentTime;
-        gameLoop.idleTime += gameLoop.elapsedTime;
-
-        if (gameLoop.idleTime >= gameLoop.SECONDS_PER_FRAME)
-        {
-            processInput(window, camera, pointLight);
-            gameLoop.idleTime -= gameLoop.SECONDS_PER_FRAME;
-        }
-
-        Shader::setViewAndProjection(camera.getViewMatrix(), glm::perspective(glm::radians(camera.getZoom()), (GLfloat)WINDOW_WIDTH / (GLfloat)WINDOW_HEIGHT, 0.01f, 100.0f));
-        Shader::setPointLightPosition(pointLight.getPosition());
+        processInput(window, camera, directionalLightPosition);
 
         /* Render here */
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-        cubeManager.render(basicShader);
-        pointLight.render(lightSourceShader);
+
+        Shader::setViewAndProjection(camera.getViewMatrix(), glm::perspective(glm::radians(camera.getZoom()), (GLfloat)WINDOW_WIDTH / (GLfloat)WINDOW_HEIGHT, 0.01f, 100.0f));
+
+        basicShader
+            .use()
+            .setUniform("model", cube.getModelMatrix())
+            .setUniform("view", Shader::getViewMatrix())
+            .setUniform("projection", Shader::getProjectionMatrix())
+            .setUniform("u_Color", cube.getColor())
+            .setUniform("directionalLight", directionalLightPosition.getPosition());
+        
+        cube.render();
+
+        cubeManager
+            .applyGravity()
+            .moveCubes()
+            .render(basicShader);
+
+        directionalLightPosition.render(lightSourceShader);
 
         /* Swap front and back buffers */
         glfwSwapBuffers(window);

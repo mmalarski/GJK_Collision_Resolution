@@ -2,7 +2,6 @@
 
 glm::mat4 Shader::view = glm::mat4(1.0f);
 glm::mat4 Shader::projection = glm::mat4(1.0f);
-glm::vec3 Shader::pointLightPosition = glm::vec3(0.0f);
 
 Shader::Shader(const std::string& path)
 {
@@ -107,11 +106,6 @@ void Shader::setViewAndProjection(const glm::mat4& view, const glm::mat4& projec
 	Shader::projection = projection;
 }
 
-void Shader::setPointLightPosition(const glm::vec3& pointLightPosition)
-{
-	Shader::pointLightPosition = pointLightPosition;
-}
-
 const glm::mat4 Shader::getViewMatrix()
 {
 	return Shader::view;
@@ -120,11 +114,6 @@ const glm::mat4 Shader::getViewMatrix()
 const glm::mat4 Shader::getProjectionMatrix()
 {
 	return Shader::projection;
-}
-
-const glm::vec3 Shader::getPointLightPosition()
-{
-	return Shader::pointLightPosition;
 }
 
 GLuint Shader::compileShader(unsigned int type, const std::string& source)

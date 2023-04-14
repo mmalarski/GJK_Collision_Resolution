@@ -27,12 +27,12 @@ in vec3 fragmentPosition;
 out vec4 color;
 
 uniform vec4 u_Color;
-uniform vec3 pointLightPosition;
+uniform vec3 directionalLight;
 
 void main()
 {
 	vec3 norm = normalize(normal_);
-	vec3 lightDirection = normalize(pointLightPosition - fragmentPosition);
+	vec3 lightDirection = normalize(directionalLight - fragmentPosition);
 	float diffuse = max(dot(norm, lightDirection), 0.3);
 	color = u_Color * diffuse;
 }
