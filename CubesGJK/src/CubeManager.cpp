@@ -45,40 +45,26 @@ void CubeManager::render(Shader& shader) const
 	}
 }
 
-CubeManager& CubeManager::setCubesHeight(const GLfloat& height)
-{
-	for (Cube* cube : this->cubes)
-	{
-		cube->setPosition(
-			cube->getPosition().x,
-			height,
-			cube->getPosition().z
-		);
-	}
-	return *this;
-}
-
-CubeManager& CubeManager::setCubesMovementDirection(const glm::vec3& force)
-{
-	for (Cube* cube : this->cubes)
-	{
-		cube->setMovementDirection(force);
-	}
-	return *this;
-}
-
-CubeManager& CubeManager::moveCubes(const GLdouble& deltaTime)
+CubeManager& CubeManager::applyGravity()
 {
 	for (Cube* cube : this->cubes)
 	{
 		if (cube->getPosition().y > 0.0f)
 		{
-			cube->applyGravity(deltaTime);
+			cube->applyGravity();
 		}
 		else
 		{
-			cube->setPosition(cube->getPosition().x, 0.0f, cube->getPosition().z);
+			cube->setMovementDirection({ 0.0f, 0.05f, 0.0f });
 		}
+	}
+	return *this;
+}
+
+CubeManager& CubeManager::moveCubes()
+{
+	for (Cube* cube : this->cubes)
+	{
 		cube->moveWithVector(cube->getMovementDirection());
 	}
 	return *this;

@@ -4,6 +4,7 @@
 #include <glm/gtc/matrix_transform.hpp>
 #include <GL/glew.h>
 #include <GLFW/glfw3.h>
+#include "macros.h"
 #include <iostream>
 
 #define CUBE_VERTICES	8
@@ -32,7 +33,7 @@ public:
 	Cube& setMovementDirection(const glm::vec3 direction);
 	Cube& moveWithVector(const glm::vec3& vector);
 	Cube& moveWithVector(const GLfloat& x, const GLfloat& y, const GLfloat& z);
-	void applyGravity(const GLdouble& deltaTime);
+	void applyGravity();
 
 private:
 	GLuint VBO = 0, VAO = 0, EBO = 0;

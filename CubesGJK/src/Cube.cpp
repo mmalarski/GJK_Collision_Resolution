@@ -21,6 +21,7 @@ Cube::~Cube() {
 	glDeleteVertexArrays(1, &this->VAO);
 	glDeleteBuffers(1, &this->VBO);
 	glDeleteBuffers(1, &this->EBO);
+	Print("destructor");
 }
 
 void Cube::render() const {
@@ -120,9 +121,9 @@ void Cube::render() const {
 	 return *this;
  }
 
- void Cube::applyGravity(const GLdouble& deltaTime)
+ void Cube::applyGravity()
  {
-	 this->movementDirection.y += -0.00001f * deltaTime;
+	 this->movementDirection.y += -0.001f;
  }
 
  void Cube::initializeBuffers()

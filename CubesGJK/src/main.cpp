@@ -14,11 +14,11 @@ struct GameLoop
     GLint64 previousTime;
     GLint64 currentTime;
     GLint64 elapsedTime;
-    GLint64 deltaTime;
+    GLint64 idleTime;
     const GLint64 SECONDS_PER_FRAME = 1 / 60;
 };
 
-void processInput(GLFWwindow* window, Camera& camera, Light& directionalLight, CubeManager& cubeManager);
+void processInput(GLFWwindow* window, Camera& camera, Light& directionalLight);
 
 int main(void)
 {
@@ -62,25 +62,18 @@ int main(void)
 
     GameLoop gameLoop;
     gameLoop.previousTime = glfwGetTime();
-    gameLoop.deltaTime = 0.0;
+    gameLoop.idleTime = 0.0;
     while (!glfwWindowShouldClose(window))
     {
         gameLoop.currentTime = glfwGetTime();
         gameLoop.elapsedTime = gameLoop.currentTime - gameLoop.previousTime;
         gameLoop.previousTime = gameLoop.currentTime;
-        gameLoop.deltaTime += gameLoop.elapsedTime;
+        gameLoop.idleTime += gameLoop.elapsedTime;
 
-        if (gameLoop.deltaTime >= gameLoop.SECONDS_PER_FRAME)
+        if (gameLoop.idleTime >= gameLoop.SECONDS_PER_FRAME)
         {
-            processInput(
-                window, 
-                camera, 
-                pointLight,
-                cubeManager);
-
-            cubeManager
-                .moveCubes(gameLoop.deltaTime);
-            gameLoop.deltaTime -= gameLoop.SECONDS_PER_FRAME;
+            processInput(window, camera, pointLight);
+            gameLoop.idleTime -= gameLoop.SECONDS_PER_FRAME;
         }
 
         Shader::setViewAndProjection(camera.getViewMatrix(), glm::perspective(glm::radians(camera.getZoom()), (GLfloat)WINDOW_WIDTH / (GLfloat)WINDOW_HEIGHT, 0.01f, 100.0f));
@@ -102,7 +95,7 @@ int main(void)
     return 0;
 }
 
-void processInput(GLFWwindow* window, Camera& camera, Light& directionalLight, CubeManager& cubeManager)
+void processInput(GLFWwindow* window, Camera& camera, Light& directionalLight)
 {
     if (glfwGetKey(window, GLFW_KEY_ESCAPE) == GLFW_PRESS)
         glfwSetWindowShouldClose(window, true);
@@ -132,9 +125,6 @@ void processInput(GLFWwindow* window, Camera& camera, Light& directionalLight, C
         directionalLight.move({ 0.0f, 0.01f, 0.0f });
     if (glfwGetKey(window, GLFW_KEY_R) == GLFW_PRESS)
         directionalLight.move({ 0.0f, -0.01f, 0.0f });
-
-    if (glfwGetKey(window, GLFW_KEY_J) == GLFW_PRESS)
-        cubeManager.setCubesMovementDirection(glm::vec3(0.0f, 0.01f, 0.0f));
 
     GLdouble mousePositionX, mousePositionY;
     glfwGetCursorPos(window, &mousePositionX, &mousePositionY);

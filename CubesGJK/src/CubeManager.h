@@ -13,10 +13,8 @@ public:
 	void addCube(Cube* cube);
 	const std::vector<Cube*>& getCubes() const;
 	void render(Shader& shader) const;
-	CubeManager& setCubesHeight(const GLfloat& height);
-	CubeManager& setCubesMovementDirection(const glm::vec3& force);
-	CubeManager& moveCubes(const GLdouble& deltaTime);
-
+	CubeManager& applyGravity();
+	CubeManager& moveCubes();
 private:
 	std::vector<Cube*> cubes;
 };
