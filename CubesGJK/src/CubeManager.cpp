@@ -43,28 +43,3 @@ void CubeManager::render(Shader& shader) const
 		cube->render();
 	}
 }
-
-CubeManager& CubeManager::applyGravity()
-{
-	for (Cube* cube : this->cubes)
-	{
-		if (cube->getPosition().y > 0.0f)
-		{
-			cube->applyGravity();
-		}
-		else
-		{
-			cube->setMovementDirection({ 0.0f, 0.05f, 0.0f });
-		}
-	}
-	return *this;
-}
-
-CubeManager& CubeManager::moveCubes()
-{
-	for (Cube* cube : this->cubes)
-	{
-		cube->moveWithVector(cube->getMovementDirection());
-	}
-	return *this;
-}

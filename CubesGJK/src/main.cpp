@@ -42,7 +42,6 @@ int main(void)
     glClearColor(0.88f, 0.88f, 0.88f, 1.0f);
 
     glfwSetCursorPos(window, WINDOW_WIDTH * 0.5, WINDOW_HEIGHT * 0.5);
-
     Camera camera(WINDOW_WIDTH * 0.5, WINDOW_HEIGHT * 0.5);
     Light directionalLightPosition({ 2.0f, 0.0f, 2.0f });
     Cube cube({ 0.0f, 3.0f, 0.0f });
@@ -70,10 +69,7 @@ int main(void)
         
         cube.render();
 
-        cubeManager
-            .applyGravity()
-            .moveCubes()
-            .render(basicShader);
+        cubeManager.render(basicShader);
 
         directionalLightPosition.render(lightSourceShader);
 
