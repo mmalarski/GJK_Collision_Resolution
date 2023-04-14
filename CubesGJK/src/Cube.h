@@ -6,10 +6,11 @@
 #include <GLFW/glfw3.h>
 #include "macros.h"
 #include <iostream>
+#include <vector>
 
 #define CUBE_VERTICES	8
 #define CUBE_INDICES	36
-#define VERTEX_COMPONENTS 3
+#define VERTEX_COMPONENTS 3 //x, y, z
 #define VERTICES_AND_NORMALS 2
 #define NORMALS_PER_VERTEX 3
 
@@ -18,19 +19,24 @@ public:
 	Cube();
 	Cube(const glm::vec3& position);
 	~Cube();
-	void render() const;
+	void render(GLboolean wire = 0) const;
 	const GLuint getVAO() const;
 	const GLuint getVBO() const;
+	const std::vector<glm::vec3> getRawVertices() const;
+	const std::vector<glm::vec3> getTranslatedVertices() const;
 	const glm::vec4 getColor() const;
 	const glm::mat4 getModelMatrix() const;
 	const glm::vec3 getPosition() const;
+	const glm::vec3 getDirectionToMove() const;
 	Cube& setColor(const glm::vec3& color);
 	Cube& setColor(const GLfloat& r, const GLfloat& g, const GLfloat& b, const GLfloat& a);
 	Cube& setPosition(const glm::vec3& position);
 	Cube& setPosition(const GLfloat& x, const GLfloat& y, const GLfloat& z);
 	Cube& setScale(const GLfloat& scale);
-	Cube& moveWithVector(const glm::vec3& vector);
-	Cube& moveWithVector(const GLfloat& x, const GLfloat& y, const GLfloat& z);
+	Cube& moveWithVector(const glm::vec3& direction);
+	Cube& simulateNextMovement();
+	Cube& revertSimulatedMovement();
+	Cube& resetDirectionToMove();
 
 private:
 	GLuint VBO = 0, VAO = 0, EBO = 0;
@@ -75,6 +81,7 @@ private:
 	};
 	glm::vec4 color;
 	glm::mat4 modelMatrix;
+	glm::vec3 directionToMove;
 
 	void initializeBuffers();
 };

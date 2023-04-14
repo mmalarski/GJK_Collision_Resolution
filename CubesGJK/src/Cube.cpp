@@ -5,6 +5,7 @@ Cube::Cube() :
 	modelMatrix(glm::mat4(1.0f))
 {
 	initializeBuffers();
+	this->directionToMove = glm::vec3(0.0f);
 }
 
 Cube::Cube(const glm::vec3& position) : 
@@ -13,23 +14,28 @@ Cube::Cube(const glm::vec3& position) :
 {
 	initializeBuffers();
 	this->setPosition(position);
+	this->directionToMove = glm::vec3(0.0f);
 }
 
 Cube::~Cube() {
 	glDeleteVertexArrays(1, &this->VAO);
 	glDeleteBuffers(1, &this->VBO);
 	glDeleteBuffers(1, &this->EBO);
-	Print("destructor");
 }
 
-void Cube::render() const {
+void Cube::render(GLboolean wire) const {
 	glBindBuffer(GL_ARRAY_BUFFER, this->VBO);
 	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, this->EBO);
 	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 6 * sizeof(float), (void*)0);
 	glEnableVertexAttribArray(0);
 	glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 6 * sizeof(float), (void*)(3 * sizeof(float)));
 	glEnableVertexAttribArray(1);
-	glDrawElements(GL_TRIANGLES, CUBE_INDICES, GL_UNSIGNED_INT, 0);
+	if (wire) {
+		glDrawElements(GL_LINES, CUBE_INDICES, GL_UNSIGNED_INT, 0);
+	}
+	else {
+		glDrawElements(GL_TRIANGLES, CUBE_INDICES, GL_UNSIGNED_INT, 0);
+	}
 }
 
  const GLuint Cube::getVAO() const
@@ -41,6 +47,30 @@ void Cube::render() const {
 {
 	return this->VBO;
 }
+
+ const std::vector<glm::vec3> Cube::getRawVertices() const
+ {
+	std::vector<glm::vec3> vertices;
+	vertices.push_back(glm::vec3(this->vertices[0],  this->vertices[1],  this->vertices[2]));				//A
+	vertices.push_back(glm::vec3(this->vertices[6],  this->vertices[7],  this->vertices[8]));				//D
+	vertices.push_back(glm::vec3(this->vertices[12],  this->vertices[13],  this->vertices[14]));			//C
+	vertices.push_back(glm::vec3(this->vertices[18],  this->vertices[19],  this->vertices[20]));			//B
+	vertices.push_back(glm::vec3(this->vertices[120], this->vertices[121], this->vertices[122]));			//H
+	vertices.push_back(glm::vec3(this->vertices[126], this->vertices[127], this->vertices[128]));			//E
+	vertices.push_back(glm::vec3(this->vertices[132], this->vertices[133], this->vertices[134]));			//F
+	vertices.push_back(glm::vec3(this->vertices[138], this->vertices[139], this->vertices[140]));			//G
+	return vertices;
+ }
+
+ const std::vector<glm::vec3> Cube::getTranslatedVertices() const
+ {
+	 std::vector<glm::vec3> vertices;
+	 for (const glm::vec3& vertex : this->getRawVertices())
+	 {
+		 vertices.push_back(glm::vec4(vertex, 1.0f) * glm::transpose(this->modelMatrix));
+	 }
+	 return vertices;
+ }
 
  const glm::vec4 Cube::getColor() const
  {
@@ -55,6 +85,11 @@ void Cube::render() const {
  const glm::vec3 Cube::getPosition() const
  {
 	 return glm::vec3(this->modelMatrix[3][0], this->modelMatrix[3][1], this->modelMatrix[3][2]);
+ }
+
+ const glm::vec3 Cube::getDirectionToMove() const
+ {
+	 return this->directionToMove;
  }
 
  Cube& Cube::setColor(const glm::vec3& color)
@@ -96,15 +131,28 @@ void Cube::render() const {
 	 return *this;
  }
 
- Cube& Cube::moveWithVector(const glm::vec3& vector) 
+ Cube& Cube::moveWithVector(const glm::vec3& direction)
  {
-	 this->modelMatrix = glm::translate(this->modelMatrix, vector);
+	 this->directionToMove += direction;
 	 return *this;
  }
 
- Cube& Cube::moveWithVector(const GLfloat& x, const GLfloat& y, const GLfloat& z)
+ Cube& Cube::simulateNextMovement()
  {
-	 glm::translate(this->modelMatrix, {x, y, z});
+	 this->modelMatrix = glm::translate(this->modelMatrix, this->directionToMove);
+	 return *this;
+ }
+ 
+ Cube& Cube::revertSimulatedMovement()
+ {
+	 this->modelMatrix = glm::translate(this->modelMatrix, -this->directionToMove);
+	 this->resetDirectionToMove();
+	 return *this;
+ }
+
+ Cube& Cube::resetDirectionToMove() 
+ {
+	 this->directionToMove = glm::vec3(0.0f);
 	 return *this;
  }
 

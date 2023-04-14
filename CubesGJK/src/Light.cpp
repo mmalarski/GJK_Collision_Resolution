@@ -15,12 +15,22 @@ void Light::render(Shader& shader) const
 		.setUniform("view", Shader::getViewMatrix())
 		.setUniform("projection", Shader::getProjectionMatrix())
 		.setUniform("model", this->cube.getModelMatrix());
-	this->cube.render();
+	this->cube.render(1);
 }
 
-void Light::move(const glm::vec3& direction)
+void Light::moveWithVector(const glm::vec3& direction)
 {
 	this->cube.moveWithVector(direction);
+}
+
+void Light::setPosition(glm::vec3 position)
+{
+	this->cube.setPosition(position);
+}
+
+void Light::resolveMovement()
+{
+	this->cube.resetDirectionToMove();
 }
 
 const glm::vec3 Light::getPosition() const
